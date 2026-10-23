@@ -168,6 +168,18 @@ body {
   min-height: 42px;
 }
 
+.btn-install {
+  background: linear-gradient(135deg, rgba(0, 208, 255, 0.2), rgba(37, 242, 82, 0.2));
+  border-color: var(--jedi-green);
+  color: #39ff68;
+}
+
+.btn-install:hover {
+  background: linear-gradient(135deg, rgba(0, 208, 255, 0.4), rgba(37, 242, 82, 0.4));
+  border-color: #ffffff;
+  box-shadow: 0 0 15px rgba(37, 242, 82, 0.8);
+}
+
 .btn-util:hover {
   background: rgba(35, 52, 94, 0.95);
   border-color: var(--jedi-blue);

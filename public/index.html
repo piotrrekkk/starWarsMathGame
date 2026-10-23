@@ -2,8 +2,22 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Gwiezdna Akademia Matematyki - Misja Jedi</title>
+
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#00d0ff">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Jedi Matematyka">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="/icons/icon.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+
+  <!-- Fonts & Styles -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
@@ -25,6 +39,7 @@
         <h1 class="logo-title">GWIEZDNA AKADEMIA MATEMATYKI</h1>
       </div>
       <div class="header-controls">
+        <button id="btn-install-pwa" class="btn-util btn-install hidden" title="Zainstaluj na urządzeniu">📲 Zainstaluj Grę</button>
         <button id="btn-sound-toggle" class="btn-util">🔊 Dźwięk: Wł.</button>
       </div>
     </header>
@@ -32,7 +47,7 @@
     <!-- SCREEN 1: START & KYBER CRYSTAL SELECTION -->
     <main id="screen-start" class="screen">
       <div class="hero-banner">
-        <div class="intro-badge">MISJA EDUKACYJNA DLA MŁODYCH JEDI</div>
+        <div class="intro-badge">MISJA EDUKACYJNA DLA MŁODYCH JEDI • APLIKACJA PWA</div>
         <h2 class="hero-heading">POZNAJ MOC MATEMATYKI!</h2>
         <p class="hero-desc">
           Opanuj dodawanie (+), odejmowanie (-), mnożenie (&times;) i dzielenie (:) od 0 do 99.<br>
@@ -214,15 +229,48 @@
           </div>
 
           <div class="rule-block">
-            <div class="rule-icon">🎴</div>
+            <div class="rule-icon">📲</div>
             <div>
-              <strong>Wybór kart lub klawiatura</strong>
-              <p>Możesz klikać jedną z 5 kart odpowiedzi lub wpisywać wynik za pomocą klawiatury. Tryb możesz zmienić w każdej chwili przyciskiem u góry ekranu.</p>
+              <strong>Zainstaluj jako aplikację (PWA)</strong>
+              <p>Możesz zainstalować tę grę na tablecie, telefonie lub komputerze, klikając przycisk instalacji u góry. Gra uruchomi się na pełnym ekranie jak prawdziwa aplikacja i będzie działać także offline!</p>
             </div>
           </div>
         </div>
         <div class="modal-footer">
           <button id="btn-close-modal" class="btn-primary">Rozumiem, do boju! 🚀</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: IOS INSTALL INSTRUCTIONS -->
+    <div id="modal-ios-install" class="modal-overlay hidden">
+      <div class="modal-card">
+        <h2 class="modal-title">📲 Jak zainstalować na iPadzie / iPhonie?</h2>
+        <div class="modal-body">
+          <div class="rule-block">
+            <div class="rule-icon">1️⃣</div>
+            <div>
+              <strong>Kliknij ikonę Udostępnij (Share)</strong>
+              <p>W przeglądarce Safari stuknij w ikonę kwadratu ze strzałką w górę (zwykle na dole lub u góry ekranu).</p>
+            </div>
+          </div>
+          <div class="rule-block">
+            <div class="rule-icon">2️⃣</div>
+            <div>
+              <strong>Wybierz „Do ekranu początkowego” (Add to Home Screen)</strong>
+              <p>Przewiń listę opcji w dół i kliknij pozycję <strong>„Do ekranu początkowego” ➕</strong>.</p>
+            </div>
+          </div>
+          <div class="rule-block">
+            <div class="rule-icon">3️⃣</div>
+            <div>
+              <strong>Gotowe!</strong>
+              <p>Ikona gry pojawi się na pulpicie tabletu. Uruchomi się w trybie pełnoekranowym bez pasków Safari!</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-close-ios-modal" class="btn-primary">Zamknij</button>
         </div>
       </div>
     </div>
@@ -274,6 +322,7 @@
   </div>
 
   <!-- Scripts -->
+  <script src="js/pwa.js"></script>
   <script src="js/audio.js"></script>
   <script src="js/data.js"></script>
   <script src="js/math-engine.js"></script>

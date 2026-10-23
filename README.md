@@ -27,6 +27,12 @@ Dzięki responsywnemu układowi gra działa na:
 - **Tabletach (iPad / Android)** (duże dotykowe panele numeryczne i karty wyboru)
 - **Smartfonach**
 
+### 📲 Instalacja jako aplikacja PWA (Progressive Web App)
+Gra została w pełni zaimplementowana jako aplikacja **PWA**:
+- **Android / Chrome / Edge:** Kliknij przycisk *„📲 Zainstaluj Grę”* w prawym górnym rogu lub opcję *„Zainstaluj aplikację”* w menu przeglądarki.
+- **iPad / iPhone (Safari):** Stuknij przycisk Udostępnij ⎋, a następnie wybierz **„Do ekranu początkowego” ➕**.
+- **Zalety PWA:** Gra uruchamia się na pełnym ekranie jak natywna aplikacja (bez pasków przeglądarki) i dzięki buforowaniu Service Worker działa również offline!
+
 ---
 
 ## 🎮 Zasady Rozgrywki (Pojedynek 1 na 1)
