@@ -1557,11 +1557,26 @@ class JediMathGame {
     }, 1300);
   }
 
+  vibrateDamage() {
+    try {
+      if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+        // Wibracja przy błędnej odpowiedzi i strzale wroga (np. na Androidzie)
+        // Wzorzec: 100ms wibracji, 60ms przerwy, 200ms wibracji
+        navigator.vibrate([100, 60, 200]);
+      }
+    } catch (e) {
+      // Bezpieczne wyciszenie błędów przy braku uprawnień lub blokadach systemowych
+    }
+  }
+
   processEnemyHit() {
     const level = GAME_DATA.levels[this.currentLevelIndex];
     // Player loses 1 life
     this.playerHp = Math.max(0, this.playerHp - 1);
     this.updateHpBars();
+
+    // Wibracje na urządzeniu mobilnym (Android PWA) przy trafieniu przez przeciwnika
+    this.vibrateDamage();
 
     if (level.style === 'blaster' || level.style === 'ship') {
       this.audio.playBlasterFire();
