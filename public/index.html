@@ -39,7 +39,7 @@
         <h1 class="logo-title">GWIEZDNA AKADEMIA MATEMATYKI</h1>
       </div>
       <div class="header-controls">
-        <button id="btn-install-pwa" class="btn-util btn-install hidden" title="Zainstaluj na urządzeniu">📲 Zainstaluj Grę</button>
+        <button id="btn-install-pwa" class="btn-util btn-install" title="Zainstaluj lub dodaj do ekranu">📲 Zainstaluj Grę</button>
         <button id="btn-sound-toggle" class="btn-util">🔊 Dźwięk: Wł.</button>
       </div>
     </header>
@@ -242,35 +242,42 @@
       </div>
     </div>
 
-    <!-- MODAL: IOS INSTALL INSTRUCTIONS -->
-    <div id="modal-ios-install" class="modal-overlay hidden">
+    <!-- MODAL: INSTALL GUIDE (HTTP & MOBILE / DESKTOP) -->
+    <div id="modal-install-guide" class="modal-overlay hidden">
       <div class="modal-card">
-        <h2 class="modal-title">📲 Jak zainstalować na iPadzie / iPhonie?</h2>
+        <h2 class="modal-title">📲 Jak zainstalować grę na urządzeniu?</h2>
         <div class="modal-body">
           <div class="rule-block">
-            <div class="rule-icon">1️⃣</div>
+            <div class="rule-icon">🤖</div>
             <div>
-              <strong>Kliknij ikonę Udostępnij (Share)</strong>
-              <p>W przeglądarce Safari stuknij w ikonę kwadratu ze strzałką w górę (zwykle na dole lub u góry ekranu).</p>
+              <strong>Tablet / Telefon Android (Chrome / Edge)</strong>
+              <p>Stuknij w menu <strong>trzech kropek (⋮)</strong> w prawym górnym rogu przeglądarki i wybierz <strong>„Dodaj do ekranu głównego”</strong> lub <strong>„Zainstaluj aplikację”</strong>.</p>
             </div>
           </div>
           <div class="rule-block">
-            <div class="rule-icon">2️⃣</div>
+            <div class="rule-icon">🍎</div>
             <div>
-              <strong>Wybierz „Do ekranu początkowego” (Add to Home Screen)</strong>
-              <p>Przewiń listę opcji w dół i kliknij pozycję <strong>„Do ekranu początkowego” ➕</strong>.</p>
+              <strong>iPad / iPhone (Safari)</strong>
+              <p>Stuknij w ikonę <strong>Udostępnij (Share ⎋)</strong>, przewiń listę opcji w dół i wybierz <strong>„Do ekranu początkowego” ➕</strong>.</p>
             </div>
           </div>
           <div class="rule-block">
-            <div class="rule-icon">3️⃣</div>
+            <div class="rule-icon">💻</div>
             <div>
-              <strong>Gotowe!</strong>
-              <p>Ikona gry pojawi się na pulpicie tabletu. Uruchomi się w trybie pełnoekranowym bez pasków Safari!</p>
+              <strong>Komputer PC / Laptop (Chrome / Edge)</strong>
+              <p>Kliknij menu <strong>trzech kropek (⋮)</strong> w przeglądarce &rarr; <em>„Prześlij, zapisz i udostępnij”</em> &rarr; <strong>„Utwórz skrót...”</strong> (zaznacz opcję <em>„Otwórz jako okno”</em>). Gra uruchomi się w osobnym oknie bez pasków przeglądarki!</p>
+            </div>
+          </div>
+          <div class="rule-block" style="border-color: rgba(255, 234, 41, 0.4); background: rgba(255, 234, 41, 0.08);">
+            <div class="rule-icon">🔒</div>
+            <div>
+              <strong style="color: var(--kyber-gold);">Wskazówka odnośnie HTTP / HTTPS</strong>
+              <p>Przeglądarki automatycznie ukrywają bezpośredni instalator 1-klikiem, gdy strona nie ma certyfikatu SSL (HTTPS). Powyższe proste kroki pozwalają dodać grę na pulpit nawet przez zwykłe połączenie HTTP!</p>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button id="btn-close-ios-modal" class="btn-primary">Zamknij</button>
+          <button id="btn-close-install-modal" class="btn-primary">Super, już wiem! 🚀</button>
         </div>
       </div>
     </div>
