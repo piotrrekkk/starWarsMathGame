@@ -36,7 +36,7 @@
         <h2 class="hero-heading">POZNAJ MOC MATEMATYKI!</h2>
         <p class="hero-desc">
           Opanuj dodawanie (+), odejmowanie (-), mnożenie (&times;) i dzielenie (:) od 0 do 99.<br>
-          Blokuj strzały wrogów, władaj mieczem świetlnym i ocal galaktykę!
+          Grasz bez pośpiechu i bez limitu czasu. Dobra odpowiedź to Twój celny strzał!
         </p>
 
         <!-- Kyber Crystal Customization -->
@@ -61,7 +61,7 @@
       <div class="section-header">
         <div class="section-title-wrap">
           <h2 class="section-title">🗺️ MAPA GALAKTYCZNA - WYBÓR MISJI</h2>
-          <p class="section-subtitle">Wybierz planetę i zmierz się z wrogami Imperium i Droidami</p>
+          <p class="section-subtitle">Pokonaj 10 żyć wroga w każdej potyczce. Uważaj na swoje 5 żyć!</p>
         </div>
       </div>
 
@@ -86,13 +86,15 @@
       <div id="battle-arena" class="arena-stage">
         <canvas id="fx-canvas"></canvas>
 
-        <!-- Player Side -->
+        <!-- Player Side (5 Lives) -->
         <div class="combatant-pod player-pod">
           <div class="hp-gauge">
             <div class="hp-header">
               <span class="hp-name">🛡️ TWÓJ JEDI</span>
-              <span id="player-hp-text" class="hp-val">100 / 100 HP</span>
+              <span id="player-hp-text" class="hp-val">5 / 5 ŻYĆ</span>
             </div>
+            <!-- Hearts display -->
+            <div id="player-hearts-container" class="hearts-strip"></div>
             <div class="hp-track">
               <div id="player-hp-bar" class="hp-fill player-fill"></div>
             </div>
@@ -102,7 +104,6 @@
 
         <!-- Center Combat Status -->
         <div class="arena-center-hud">
-          <div id="phase-badge" class="badge-defense">FAZA: OBRONA</div>
           <div class="stats-counter-strip">
             <div class="stat-item">
               <span class="stat-label">PUNKTY</span>
@@ -113,15 +114,18 @@
               <span id="combo-display" class="stat-number combo-accent">x0</span>
             </div>
           </div>
+          <div class="battle-vs-badge">⚡ POJEDYNEK ⚡</div>
         </div>
 
-        <!-- Enemy Side -->
+        <!-- Enemy Side (10 Lives) -->
         <div class="combatant-pod enemy-pod">
           <div class="hp-gauge">
             <div class="hp-header">
               <span id="enemy-name-display" class="hp-name">WRÓG</span>
-              <span id="enemy-hp-text" class="hp-val">100 / 100 HP</span>
+              <span id="enemy-hp-text" class="hp-val">10 / 10 ŻYĆ</span>
             </div>
+            <!-- Hearts display -->
+            <div id="enemy-hearts-container" class="hearts-strip enemy-hearts"></div>
             <div class="hp-track">
               <div id="enemy-hp-bar" class="hp-fill enemy-fill"></div>
             </div>
@@ -133,14 +137,9 @@
 
       <!-- Action Control Console (Math Question & Inputs) -->
       <div class="action-console">
-        <div class="console-header">
-          <h3 id="phase-title" class="phase-defense">🛡️ WRÓG ATAKUJE! ZABLOKUJ CIOS!</h3>
-          <div class="timer-wrapper">
-            <div class="timer-track">
-              <div id="timer-bar-fill" class="timer-fill"></div>
-            </div>
-            <span id="timer-text" class="timer-counter">16.0s</span>
-          </div>
+        <div class="console-header-no-timer">
+          <h3 id="phase-title" class="phase-attack">⚡ ROZWIĄŻ DZIAŁANIE I ODDAJ STRZAŁ!</h3>
+          <span class="no-timer-badge">⏳ Bez pośpiechu (brak limitu czasu)</span>
         </div>
 
         <div class="question-display-card">
@@ -183,39 +182,47 @@
         <h2 class="modal-title">📖 Jak grać w Akademię Jedi?</h2>
         <div class="modal-body">
           <div class="rule-block">
-            <div class="rule-icon">🛡️</div>
+            <div class="rule-icon">🎯</div>
             <div>
-              <strong>Krok 1: FAZA OBRONY (Wróg atakuje!)</strong>
-              <p>Gdy zobaczysz czerwony alarm i strzał wroga, szybko rozwiąż działanie w zadanym czasie. Poprawna odpowiedź odbija laser mieczem świetlnym lub tarczą! Błędna odpowiedź lub brak czasu zabiera Twoje punkty życia (HP).</p>
+              <strong>Dobra odpowiedź = Twój strzał!</strong>
+              <p>Gdy poprawnie rozwiążesz zadanie, Twój Jedi natychmiast oddaje celny strzał z blastera lub wyprowadza cięcie mieczem świetlnym. Przeciwnik traci 1 życie!</p>
             </div>
           </div>
 
           <div class="rule-block">
-            <div class="rule-icon">⚔️</div>
+            <div class="rule-icon">💥</div>
             <div>
-              <strong>Krok 2: FAZA ATAKU (Twoja kolej!)</strong>
-              <p>Teraz to Ty wyprowadzasz cios! Kolejne zadanie matematyczne pozwoli Ci zadać obrażenia wrogowi i naładować serię (Combo).</p>
+              <strong>Błąd = Strzał przeciwnika!</strong>
+              <p>Jeśli się pomylisz, to przeciwnik strzela w Twoją stronę, a Ty tracisz 1 życie. Zobaczysz też na zielono prawidłowy wynik, aby uczyć się na bieżąco.</p>
             </div>
           </div>
 
           <div class="rule-block">
-            <div class="rule-icon">🧮</div>
+            <div class="rule-icon">❤️</div>
             <div>
-              <strong>Matematyka od 0 do 99</strong>
-              <p>W każdej potyczce zmierzysz się z 4 działaniami: dodawaniem (+), odejmowaniem (-), mnożeniem (&times;) i dzieleniem (:). Na początku masz dużo czasu na namysł, a na wyższych poziomach walka staje się coraz szybsza!</p>
+              <strong>Pula żyć w każdej rundzie</strong>
+              <p>Ty masz <strong>5 żyć</strong> 💙, a przeciwnik ma <strong>10 żyć</strong> ❤️. Aby wygrać rundę, musisz 10 razy trafić wroga, zanim stracisz swoje 5 żyć.</p>
             </div>
           </div>
 
           <div class="rule-block">
-            <div class="rule-icon">🎮</div>
+            <div class="rule-icon">⏳</div>
             <div>
-              <strong>Wygodne sterowanie na tablecie i komputerze</strong>
-              <p>Możesz wybierać jedną z 5 kart odpowiedzi albo wpisywać wynik za pomocą klawiatury numerycznej. W każdej chwili możesz przełączać tryb przyciskiem na górze ekranu!</p>
+              <strong>Brak limitu czasu</strong>
+              <p>Nie ma żadnego odliczania ani stresu! Policz spokojnie w pamięci lub na kartce. Gra czeka na Twój ruch.</p>
+            </div>
+          </div>
+
+          <div class="rule-block">
+            <div class="rule-icon">🎴</div>
+            <div>
+              <strong>Wybór kart lub klawiatura</strong>
+              <p>Możesz klikać jedną z 5 kart odpowiedzi lub wpisywać wynik za pomocą klawiatury. Tryb możesz zmienić w każdej chwili przyciskiem u góry ekranu.</p>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button id="btn-close-modal" class="btn-primary">Rozumiem, niech Moc będzie ze mną!</button>
+          <button id="btn-close-modal" class="btn-primary">Rozumiem, do boju! 🚀</button>
         </div>
       </div>
     </div>
@@ -239,7 +246,7 @@
             <span id="victory-accuracy" class="vstat-num">95%</span>
           </div>
           <div class="vstat">
-            <span class="vstat-label">Najwyższe Combo:</span>
+            <span class="vstat-label">Najwyższa Seria (Combo):</span>
             <span id="victory-combo" class="vstat-num">x6</span>
           </div>
         </div>

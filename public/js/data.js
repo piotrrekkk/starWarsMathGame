@@ -9,6 +9,9 @@ const GAME_DATA = {
     { id: 'red', name: 'Karmazynowy Kyber', color: '#ff2a4b', glow: 'rgba(255, 42, 75, 0.8)', title: 'Wojownik Cienia' }
   ],
 
+  playerDefaultLives: 5,
+  enemyDefaultLives: 10,
+
   levels: [
     {
       id: 1,
@@ -18,14 +21,12 @@ const GAME_DATA = {
       enemyName: 'Zdalna Sonda Treningowa',
       enemySub: 'Marksman-H (Autonomiczny Droid)',
       enemyType: 'droid',
-      style: 'blaster', // Style: Blaster defense (deflect bolts with saber or shield)
-      weaponName: 'Blaster Treningowy & Miecz',
-      description: 'Ćwicz skupienie! Odbijaj laserowe strzały sondy treningowej i oddawaj celne salwy.',
-      timePerQuestion: 16, // Generous time at entry level for 9-year-olds
-      enemyHp: 100,
-      playerDamage: 25, // 4 successful attacks to win
-      enemyDamage: 20,  // 5 failures to defeat
-      defaultInputMode: 'choices', // 5 choices by default on level 1
+      style: 'blaster',
+      weaponName: 'Blaster Treningowy',
+      description: 'Rozwiązuj działania bez pośpiechu. Każda dobra odpowiedź to Twój celny strzał! Błąd oznacza trafienie od sondy.',
+      playerLives: 5,
+      enemyLives: 10,
+      defaultInputMode: 'choices',
       themeColor: '#00d0ff',
       backgroundClass: 'bg-coruscant',
       enemySvg: 'droid-training'
@@ -38,14 +39,12 @@ const GAME_DATA = {
       enemyName: 'Droid Bojowy B1',
       enemySub: 'Oddział Zwiadowczy Federacji',
       enemyType: 'b1-droid',
-      style: 'blaster', // Blaster battle
+      style: 'blaster',
       weaponName: 'Karabin Blasterowy E-11',
-      description: 'Uwaga na dwa słońca i laserowy ostrzał! Zablokuj salwy droida i unieszkodliw jego obwody.',
-      timePerQuestion: 13, // Slightly faster
-      enemyHp: 120,
-      playerDamage: 25,
-      enemyDamage: 20,
-      defaultInputMode: 'choices', // 5 choices by default on level 2
+      description: 'Droidy bojowe nacierają na pustyni. Celuj precyzyjnie matematyką, by rozbić ich szyk!',
+      playerLives: 5,
+      enemyLives: 10,
+      defaultInputMode: 'choices',
       themeColor: '#ff9d00',
       backgroundClass: 'bg-tatooine',
       enemySvg: 'droid-b1'
@@ -58,14 +57,12 @@ const GAME_DATA = {
       enemyName: 'Elitarny Szturmowiec Śnieżny',
       enemySub: 'Ciężka Piechota Imperium',
       enemyType: 'snowtrooper',
-      style: 'blaster', // Heavy blaster & shield
+      style: 'blaster',
       weaponName: 'Ciężki Blaster & Tarcza Mocy',
-      description: 'Zimno przeszywa powietrze! Wpisuj wyniki na terminalu, aby przełamać pancerz szturmowca!',
-      timePerQuestion: 11, // Faster
-      enemyHp: 140,
-      playerDamage: 28,
-      enemyDamage: 22,
-      defaultInputMode: 'keyboard', // Transitions to keyboard/numpad
+      description: 'Wpisuj wyniki na terminalu, aby oddawać celne salwy w pancerz szturmowca!',
+      playerLives: 5,
+      enemyLives: 10,
+      defaultInputMode: 'keyboard',
       themeColor: '#4deeea',
       backgroundClass: 'bg-hoth',
       enemySvg: 'snowtrooper'
@@ -77,14 +74,11 @@ const GAME_DATA = {
       title: 'Pojedynek z Inkwizytorem',
       enemyName: 'Mroczny Inkwizytor',
       enemySub: 'Uczeń Ciemnej Strony',
-      enemyType: 'inquisitor',
-      style: 'saber', // Lightsaber duel!
+      enemyType: 'saber',
       weaponName: 'Świetlny Miecz Oburęczny',
-      description: 'Skrzyżuj miecze świetlne! Sparuj błyskawiczne cięcia inkwizytora i wyprowadź ripostę.',
-      timePerQuestion: 9, // Fast
-      enemyHp: 160,
-      playerDamage: 32,
-      enemyDamage: 25,
+      description: 'Pojedynek na miecze świetlne! Dobre obliczenie to Twój potężny cios klingą, błąd to atak Inkwizytora!',
+      playerLives: 5,
+      enemyLives: 10,
       defaultInputMode: 'keyboard',
       themeColor: '#ff0055',
       backgroundClass: 'bg-bespin',
@@ -98,13 +92,11 @@ const GAME_DATA = {
       enemyName: 'Lord Vader',
       enemySub: 'Mroczny Lord Sithów',
       enemyType: 'vader',
-      style: 'saber', // Epic master duel!
-      weaponName: 'Legendarny Miecz Mistrza Jedi',
-      description: 'Największa próba Mocy! Vader atakuje bez litości. Tylko mistrzowska szybkość liczenia ocali galaktykę!',
-      timePerQuestion: 7.5, // Reflexes + fast calculations
-      enemyHp: 200,
-      playerDamage: 35,
-      enemyDamage: 30,
+      style: 'saber',
+      weaponName: 'Mistrzowski Miecz Świetlny',
+      description: 'Ostateczny pojedynek z Lordem Vaderem! 10 żyć wroga do pokonania. Pokaż siłę Mocy i matematyki!',
+      playerLives: 5,
+      enemyLives: 10,
       defaultInputMode: 'keyboard',
       themeColor: '#ff1744',
       backgroundClass: 'bg-deathstar',

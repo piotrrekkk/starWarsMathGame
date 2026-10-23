@@ -536,9 +536,70 @@ body {
 .hp-header {
   display: flex;
   justify-content: space-between;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+}
+
+.hearts-strip {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.enemy-hearts {
+  justify-content: flex-end;
+}
+
+.heart-icon {
+  font-size: 1.15rem;
+  line-height: 1;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  filter: drop-shadow(0 0 4px rgba(0, 208, 255, 0.6));
+}
+
+.heart-icon.enemy-heart {
+  filter: drop-shadow(0 0 4px rgba(255, 42, 75, 0.6));
+  font-size: 1rem;
+}
+
+.heart-icon.lost {
+  opacity: 0.25;
+  filter: grayscale(1);
+  transform: scale(0.85);
+}
+
+.battle-vs-badge {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--kyber-gold);
+  text-shadow: 0 0 10px var(--kyber-gold-glow);
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 234, 41, 0.3);
+}
+
+.console-header-no-timer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.no-timer-badge {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 4px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .hp-track {
