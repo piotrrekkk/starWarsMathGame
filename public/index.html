@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Gwiezdna Akademia Matematyki - Misja Jedi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Background Deep Space & Nebula -->
+  <div class="space-backdrop">
+    <div class="stars-layer-1"></div>
+    <div class="stars-layer-2"></div>
+    <div class="nebula-glow"></div>
+  </div>
+
+  <div id="app-root">
+    <!-- Top Global Header -->
+    <header class="global-header">
+      <div class="brand">
+        <span class="jedi-emblem">⚔️</span>
+        <h1 class="logo-title">GWIEZDNA AKADEMIA MATEMATYKI</h1>
+      </div>
+      <div class="header-controls">
+        <button id="btn-sound-toggle" class="btn-util">🔊 Dźwięk: Wł.</button>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: START & KYBER CRYSTAL SELECTION -->
+    <main id="screen-start" class="screen">
+      <div class="hero-banner">
+        <div class="intro-badge">MISJA EDUKACYJNA DLA MŁODYCH JEDI</div>
+        <h2 class="hero-heading">POZNAJ MOC MATEMATYKI!</h2>
+        <p class="hero-desc">
+          Opanuj dodawanie (+), odejmowanie (-), mnożenie (&times;) i dzielenie (:) od 0 do 99.<br>
+          Blokuj strzały wrogów, władaj mieczem świetlnym i ocal galaktykę!
+        </p>
+
+        <!-- Kyber Crystal Customization -->
+        <div class="crystal-selection-box">
+          <h3 class="box-heading">Wybierz swój Kryształ Kyber do miecza:</h3>
+          <div id="crystal-selector" class="crystal-grid"></div>
+        </div>
+
+        <div class="start-actions">
+          <button id="btn-start-game" class="btn-primary btn-pulse">
+            <span class="btn-icon">⚡</span> WSTĄP DO AKADEMII JEDI
+          </button>
+          <button id="btn-how-to-play" class="btn-secondary">
+            📖 Jak grać? (Zasady)
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <!-- SCREEN 2: GALAXY MAP / LEVEL SELECT -->
+    <main id="screen-level-select" class="screen hidden">
+      <div class="section-header">
+        <div class="section-title-wrap">
+          <h2 class="section-title">🗺️ MAPA GALAKTYCZNA - WYBÓR MISJI</h2>
+          <p class="section-subtitle">Wybierz planetę i zmierz się z wrogami Imperium i Droidami</p>
+        </div>
+      </div>
+
+      <div id="levels-grid" class="levels-container">
+        <!-- Rendered by game.js -->
+      </div>
+    </main>
+
+    <!-- SCREEN 3: BATTLE ARENA -->
+    <main id="screen-battle" class="screen hidden">
+      <!-- Arena Top Bar -->
+      <div class="battle-nav">
+        <button id="btn-back-menu" class="btn-util">&larr; Mapa Misji</button>
+        <div class="battle-badges">
+          <span id="planet-badge" class="badge-planet">🪐 Coruscant</span>
+          <span id="style-badge" class="badge-style">🔫 BLASTER</span>
+        </div>
+        <button id="btn-toggle-input-mode" class="btn-util btn-mode-toggle">⌨️ Tryb: Klawiatura</button>
+      </div>
+
+      <!-- Live Combat Arena -->
+      <div id="battle-arena" class="arena-stage">
+        <canvas id="fx-canvas"></canvas>
+
+        <!-- Player Side -->
+        <div class="combatant-pod player-pod">
+          <div class="hp-gauge">
+            <div class="hp-header">
+              <span class="hp-name">🛡️ TWÓJ JEDI</span>
+              <span id="player-hp-text" class="hp-val">100 / 100 HP</span>
+            </div>
+            <div class="hp-track">
+              <div id="player-hp-bar" class="hp-fill player-fill"></div>
+            </div>
+          </div>
+          <div id="player-avatar-box" class="avatar-holder"></div>
+        </div>
+
+        <!-- Center Combat Status -->
+        <div class="arena-center-hud">
+          <div id="phase-badge" class="badge-defense">FAZA: OBRONA</div>
+          <div class="stats-counter-strip">
+            <div class="stat-item">
+              <span class="stat-label">PUNKTY</span>
+              <span id="score-display" class="stat-number">0</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">SERIA (COMBO)</span>
+              <span id="combo-display" class="stat-number combo-accent">x0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enemy Side -->
+        <div class="combatant-pod enemy-pod">
+          <div class="hp-gauge">
+            <div class="hp-header">
+              <span id="enemy-name-display" class="hp-name">WRÓG</span>
+              <span id="enemy-hp-text" class="hp-val">100 / 100 HP</span>
+            </div>
+            <div class="hp-track">
+              <div id="enemy-hp-bar" class="hp-fill enemy-fill"></div>
+            </div>
+          </div>
+          <div id="enemy-avatar-box" class="avatar-holder"></div>
+          <div id="enemy-sub-display" class="enemy-subtitle"></div>
+        </div>
+      </div>
+
+      <!-- Action Control Console (Math Question & Inputs) -->
+      <div class="action-console">
+        <div class="console-header">
+          <h3 id="phase-title" class="phase-defense">🛡️ WRÓG ATAKUJE! ZABLOKUJ CIOS!</h3>
+          <div class="timer-wrapper">
+            <div class="timer-track">
+              <div id="timer-bar-fill" class="timer-fill"></div>
+            </div>
+            <span id="timer-text" class="timer-counter">16.0s</span>
+          </div>
+        </div>
+
+        <div class="question-display-card">
+          <span class="formula-label">ROZWIĄŻ DZIAŁANIE:</span>
+          <div id="question-text" class="math-formula">48 : 6 = ?</div>
+        </div>
+
+        <!-- INPUT METHOD A: 5 Choice Cards -->
+        <div id="choices-container" class="choices-row">
+          <!-- 5 choice buttons dynamically generated -->
+        </div>
+
+        <!-- INPUT METHOD B: Virtual Touch Numpad & Keyboard -->
+        <div id="numpad-container" class="numpad-panel hidden">
+          <div class="numpad-screen">
+            <span class="numpad-hint">Wpisz wynik:</span>
+            <div id="numpad-display-value" class="numpad-val">?</div>
+          </div>
+          <div class="numpad-grid">
+            <button class="numpad-key" data-val="1">1</button>
+            <button class="numpad-key" data-val="2">2</button>
+            <button class="numpad-key" data-val="3">3</button>
+            <button class="numpad-key" data-val="4">4</button>
+            <button class="numpad-key" data-val="5">5</button>
+            <button class="numpad-key" data-val="6">6</button>
+            <button class="numpad-key" data-val="7">7</button>
+            <button class="numpad-key" data-val="8">8</button>
+            <button class="numpad-key" data-val="9">9</button>
+            <button class="numpad-key key-clear" data-val="backspace">⌫ Cofnij</button>
+            <button class="numpad-key" data-val="0">0</button>
+            <button class="numpad-key key-submit" data-val="enter">✔ Zatwierdź</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- MODAL: HOW TO PLAY (JAK GRAĆ) -->
+    <div id="modal-how-to" class="modal-overlay hidden">
+      <div class="modal-card">
+        <h2 class="modal-title">📖 Jak grać w Akademię Jedi?</h2>
+        <div class="modal-body">
+          <div class="rule-block">
+            <div class="rule-icon">🛡️</div>
+            <div>
+              <strong>Krok 1: FAZA OBRONY (Wróg atakuje!)</strong>
+              <p>Gdy zobaczysz czerwony alarm i strzał wroga, szybko rozwiąż działanie w zadanym czasie. Poprawna odpowiedź odbija laser mieczem świetlnym lub tarczą! Błędna odpowiedź lub brak czasu zabiera Twoje punkty życia (HP).</p>
+            </div>
+          </div>
+
+          <div class="rule-block">
+            <div class="rule-icon">⚔️</div>
+            <div>
+              <strong>Krok 2: FAZA ATAKU (Twoja kolej!)</strong>
+              <p>Teraz to Ty wyprowadzasz cios! Kolejne zadanie matematyczne pozwoli Ci zadać obrażenia wrogowi i naładować serię (Combo).</p>
+            </div>
+          </div>
+
+          <div class="rule-block">
+            <div class="rule-icon">🧮</div>
+            <div>
+              <strong>Matematyka od 0 do 99</strong>
+              <p>W każdej potyczce zmierzysz się z 4 działaniami: dodawaniem (+), odejmowaniem (-), mnożeniem (&times;) i dzieleniem (:). Na początku masz dużo czasu na namysł, a na wyższych poziomach walka staje się coraz szybsza!</p>
+            </div>
+          </div>
+
+          <div class="rule-block">
+            <div class="rule-icon">🎮</div>
+            <div>
+              <strong>Wygodne sterowanie na tablecie i komputerze</strong>
+              <p>Możesz wybierać jedną z 5 kart odpowiedzi albo wpisywać wynik za pomocą klawiatury numerycznej. W każdej chwili możesz przełączać tryb przyciskiem na górze ekranu!</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-close-modal" class="btn-primary">Rozumiem, niech Moc będzie ze mną!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: VICTORY -->
+    <div id="modal-victory" class="modal-overlay hidden">
+      <div class="modal-card victory-card">
+        <div class="victory-icon">🏆</div>
+        <h2 class="modal-title victory-title">ZWYCIĘSTWO! MOC JEST Z TOBĄ!</h2>
+        <p class="victory-sub">Oczyszczono planetę: <strong id="victory-planet-name">Coruscant</strong></p>
+
+        <div id="victory-stars" class="stars-rating">⭐⭐⭐</div>
+
+        <div class="victory-stats">
+          <div class="vstat">
+            <span class="vstat-label">Zdobyte Punkty:</span>
+            <span id="victory-score" class="vstat-num">1250</span>
+          </div>
+          <div class="vstat">
+            <span class="vstat-label">Celność Odpowiedzi:</span>
+            <span id="victory-accuracy" class="vstat-num">95%</span>
+          </div>
+          <div class="vstat">
+            <span class="vstat-label">Najwyższe Combo:</span>
+            <span id="victory-combo" class="vstat-num">x6</span>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button id="btn-next-level" class="btn-primary btn-pulse">Następna Misja &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: DEFEAT / RETRY -->
+    <div id="modal-defeat" class="modal-overlay hidden">
+      <div class="modal-card defeat-card">
+        <div class="defeat-icon">⚡</div>
+        <h2 class="modal-title defeat-title">MOC POTRZEBUJE ODPOCZYNKU</h2>
+        <p class="defeat-sub">Nie poddawaj się! Porażka to najlepszy nauczyciel Jedi na planecie <strong id="defeat-planet-name">Hoth</strong>.</p>
+        <p id="defeat-tip" class="defeat-advice"></p>
+
+        <div class="modal-footer">
+          <button id="btn-retry" class="btn-primary">Spróbuj Ponownie 🔄</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/audio.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/math-engine.js"></script>
+  <script src="js/visual-fx.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>
