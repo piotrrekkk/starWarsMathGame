@@ -238,7 +238,7 @@ class JediMathGame {
       const card = document.createElement('div');
       card.className = `level-card ${isUnlocked ? 'unlocked' : 'locked'}`;
 
-      const icon = lvl.style === 'blaster' ? '🔫 BLASTER' : '⚔️ MIECZ ŚWIETLNY';
+      const icon = lvl.style === 'ship' ? '🚀 MYŚLIWIEC X-WING' : (lvl.style === 'blaster' ? '🔫 BLASTER' : '⚔️ MIECZ ŚWIETLNY');
 
       card.innerHTML = `
         <div class="level-badge">POZIOM ${lvl.id}</div>
@@ -284,10 +284,20 @@ class JediMathGame {
 
     // Setup Arena UI
     this.elPlanetBadge.textContent = `🪐 ${level.planet} - ${level.location}`;
-    this.elStyleBadge.textContent = level.style === 'blaster' ? '🔫 OSTRZAŁ BLASTEROWY' : '⚔️ POJEDYNEK NA MIECZE';
+    if (level.style === 'ship') {
+      this.elStyleBadge.textContent = '🚀 WALKA MYŚLIWCÓW: X-WING';
+      const playerHpName = document.querySelector('.player-pod .hp-name');
+      if (playerHpName) playerHpName.textContent = '🚀 TWÓJ X-WING';
+    } else {
+      this.elStyleBadge.textContent = level.style === 'blaster' ? '🔫 OSTRZAŁ BLASTEROWY' : '⚔️ POJEDYNEK NA MIECZE';
+      const playerHpName = document.querySelector('.player-pod .hp-name');
+      if (playerHpName) playerHpName.textContent = '🛡️ TWÓJ JEDI';
+    }
     this.elEnemyName.textContent = level.enemyName;
     this.elEnemySub.textContent = level.enemySub;
-    this.elPhaseTitle.textContent = '⚡ ROZWIĄŻ DZIAŁANIE I ODDAJ STRZAŁ!';
+    this.elPhaseTitle.textContent = level.style === 'ship'
+      ? '⚡ ROZWIĄŻ DZIAŁANIE I ODPAL LASERY X-WINGA!'
+      : '⚡ ROZWIĄŻ DZIAŁANIE I ODDAJ STRZAŁ!';
     this.elPhaseTitle.className = 'phase-attack';
 
     // Apply planet background class & render backdrop scenery
@@ -696,6 +706,84 @@ class JediMathGame {
   renderPlayerAvatar(level) {
     const container = document.getElementById('player-avatar-box');
     const saberColor = this.selectedCrystal.color;
+
+    if (level.style === 'ship') {
+      container.innerHTML = `
+        <div class="combatant-figure player-figure stance-ship anim-hover">
+          <svg viewBox="0 0 210 220" class="hero-svg">
+            <defs>
+              <linearGradient id="xwing-hull" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#ffffff" />
+                <stop offset="50%" stop-color="#e2e8f0" />
+                <stop offset="100%" stop-color="#94a3b8" />
+              </linearGradient>
+              <linearGradient id="engine-glow" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#ff0055" />
+                <stop offset="50%" stop-color="#ff7b00" />
+                <stop offset="100%" stop-color="#ffee55" />
+              </linearGradient>
+            </defs>
+
+            <!-- Sublight Engine Thrust Flame Trails -->
+            <polygon points="12,78 38,82 12,86" fill="url(#engine-glow)" style="filter: drop-shadow(0 0 8px #ff7b00);" />
+            <polygon points="12,138 38,142 12,146" fill="url(#engine-glow)" style="filter: drop-shadow(0 0 8px #ff7b00);" />
+
+            <!-- UPPER STARBOARD S-FOIL WING -->
+            <polygon points="45,80 120,40 120,55 50,92" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5" />
+            <!-- Red Five Squadron Stripe on Upper Wing -->
+            <polygon points="80,58 95,50 97,55 82,63" fill="#ff2a4b" />
+            <polygon points="102,46 112,42 114,46 104,50" fill="#ff2a4b" />
+            <!-- Upper Wing Laser Cannon -->
+            <rect x="35" y="42" width="135" height="4" rx="2" fill="#475569" />
+            <rect x="165" y="40" width="10" height="8" rx="2" fill="#1e293b" />
+            <!-- Laser Tip Charge Glow -->
+            <circle cx="176" cy="44" r="3.5" fill="#ff2a4b" style="filter: drop-shadow(0 0 6px #ff2a4b);" />
+
+            <!-- LOWER STARBOARD S-FOIL WING -->
+            <polygon points="45,145 120,185 120,170 50,133" fill="#cbd5e1" stroke="#64748b" stroke-width="1.5" />
+            <!-- Red Five Squadron Stripe on Lower Wing -->
+            <polygon points="80,167 95,175 97,170 82,162" fill="#ff2a4b" />
+            <polygon points="102,179 112,183 114,179 104,175" fill="#ff2a4b" />
+            <!-- Lower Wing Laser Cannon -->
+            <rect x="35" y="178" width="135" height="4" rx="2" fill="#475569" />
+            <rect x="165" y="176" width="10" height="8" rx="2" fill="#1e293b" />
+            <!-- Laser Tip Charge Glow -->
+            <circle cx="176" cy="180" r="3.5" fill="#ff2a4b" style="filter: drop-shadow(0 0 6px #ff2a4b);" />
+
+            <!-- Incom 4L4 Sublight Engine Cylinders -->
+            <rect x="32" y="75" width="45" height="15" rx="4" fill="#334155" stroke="#1e293b" stroke-width="1.5" />
+            <circle cx="32" cy="82.5" r="5.5" fill="#ff0055" style="filter: drop-shadow(0 0 6px #ff0055);" />
+            
+            <rect x="32" y="135" width="45" height="15" rx="4" fill="#334155" stroke="#1e293b" stroke-width="1.5" />
+            <circle cx="32" cy="142.5" r="5.5" fill="#ff0055" style="filter: drop-shadow(0 0 6px #ff0055);" />
+
+            <!-- MAIN FUSELAGE -->
+            <polygon points="40,92 125,94 125,130 40,132" fill="url(#xwing-hull)" stroke="#64748b" stroke-width="1.5" />
+            
+            <!-- Astromech Droid R2-D2 Socket -->
+            <rect x="86" y="86" width="14" height="8" fill="#1e293b" />
+            <ellipse cx="93" cy="86" rx="6" ry="6" fill="#cbd5e1" stroke="#0066cc" stroke-width="1.5" />
+            <rect x="90" y="83" width="3" height="3" fill="#0066cc" />
+            <circle cx="95" cy="85" r="1.2" fill="#ff2a4b" style="filter: drop-shadow(0 0 2px #ff2a4b);" />
+
+            <!-- Cockpit Canopy -->
+            <polygon points="108,94 140,98 140,126 108,130" fill="#0f172a" stroke="#475569" stroke-width="1.5" />
+            <polygon points="112,96 136,100 136,110 112,108" fill="#1e293b" />
+            <line x1="114" y1="99" x2="134" y2="103" stroke="#38bdf8" stroke-width="1.5" />
+
+            <!-- Tapered Nose Section -->
+            <polygon points="125,94 186,108 186,116 125,130" fill="url(#xwing-hull)" stroke="#64748b" stroke-width="1.5" />
+            <polygon points="186,108 198,111 198,113 186,116" fill="#334155" />
+            <polygon points="145,100 162,104 160,110 143,106" fill="#ff2a4b" />
+            <rect x="168" y="106" width="10" height="4" fill="#ffea29" />
+            
+            <line x1="160" y1="112" x2="195" y2="112" stroke="#ff2a4b" stroke-width="2" style="filter: drop-shadow(0 0 8px #ff2a4b);" />
+          </svg>
+        </div>
+      `;
+      return;
+    }
+
     const isSaber = level.style === 'saber';
 
     container.innerHTML = `
@@ -861,7 +949,67 @@ class JediMathGame {
     const container = document.getElementById('enemy-avatar-box');
     let svgContent = '';
 
-    if (level.enemySvg === 'droid-training') {
+    if (level.enemySvg === 'tie-fighter') {
+      svgContent = `
+        <svg viewBox="0 0 210 220" class="enemy-svg anim-hover">
+          <defs>
+            <linearGradient id="tie-panel" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#1e242c" />
+              <stop offset="50%" stop-color="#0f1318" />
+              <stop offset="100%" stop-color="#05070a" />
+            </linearGradient>
+            <linearGradient id="tie-hull" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#717c8d" />
+              <stop offset="50%" stop-color="#475161" />
+              <stop offset="100%" stop-color="#282f3a" />
+            </linearGradient>
+          </defs>
+
+          <!-- REAR ION ENGINE THRUSTER (Right) -->
+          <circle cx="140" cy="110" r="8" fill="#ff2a4b" opacity="0.8" style="filter: drop-shadow(0 0 10px #ff2a4b);" />
+          <circle cx="140" cy="110" r="4" fill="#ffffff" />
+
+          <!-- HEXAGONAL SOLAR COLLECTOR WING (Facing towards player in perspective) -->
+          <polygon points="65,18 120,18 145,110 120,202 65,202 40,110" fill="url(#tie-panel)" stroke="#475161" stroke-width="3" />
+          
+          <!-- Inner Solar Cell Structural Spokes -->
+          <line x1="92" y1="110" x2="65" y2="18" stroke="#5d6878" stroke-width="2" />
+          <line x1="92" y1="110" x2="120" y2="18" stroke="#5d6878" stroke-width="2" />
+          <line x1="92" y1="110" x2="145" y2="110" stroke="#5d6878" stroke-width="2" />
+          <line x1="92" y1="110" x2="120" y2="202" stroke="#5d6878" stroke-width="2" />
+          <line x1="92" y1="110" x2="65" y2="202" stroke="#5d6878" stroke-width="2" />
+          <line x1="92" y1="110" x2="40" y2="110" stroke="#5d6878" stroke-width="2" />
+
+          <!-- Center Wing Hub -->
+          <polygon points="80,102 104,102 110,110 104,118 80,118 74,110" fill="#2d3542" stroke="#5d6878" stroke-width="1.5" />
+
+          <!-- PYLON BRACKET TO COCKPIT -->
+          <rect x="92" y="104" width="38" height="12" fill="url(#tie-hull)" stroke="#1a1e26" stroke-width="1.5" />
+
+          <!-- SPHERICAL COMMAND COCKPIT POD -->
+          <circle cx="122" cy="110" r="34" fill="url(#tie-hull)" stroke="#181c22" stroke-width="2" />
+          <circle cx="122" cy="110" r="28" fill="#1e232b" />
+
+          <!-- OCTAGONAL VIEWPORT WINDOW -->
+          <polygon points="106,102 114,94 126,94 134,102 134,118 126,126 114,126 106,118" fill="#0a0d12" stroke="#64748b" stroke-width="1.5" />
+          <circle cx="120" cy="110" r="6" fill="#1e293b" stroke="#38bdf8" stroke-width="1" />
+          <line x1="120" y1="94" x2="120" y2="126" stroke="#475569" stroke-width="1.5" />
+          <line x1="106" y1="110" x2="134" y2="110" stroke="#475569" stroke-width="1.5" />
+          <line x1="110" y1="100" x2="130" y2="120" stroke="#475569" stroke-width="1.5" />
+          <line x1="110" y1="120" x2="130" y2="100" stroke="#475569" stroke-width="1.5" />
+          <path d="M 112,102 Q 120,96 128,102" stroke="#38bdf8" stroke-width="1.5" fill="none" opacity="0.8" />
+
+          <!-- TWIN CHIN LASER CANNONS -->
+          <circle cx="106" cy="132" r="3.5" fill="#222" stroke="#555" stroke-width="1" />
+          <circle cx="114" cy="134" r="3.5" fill="#222" stroke="#555" stroke-width="1" />
+          <!-- Emerald Green Laser Charge Glow -->
+          <circle cx="106" cy="132" r="4.5" fill="#25f252" style="filter: drop-shadow(0 0 8px #25f252);" />
+          <circle cx="106" cy="132" r="2" fill="#ffffff" />
+          <circle cx="114" cy="134" r="4.5" fill="#25f252" style="filter: drop-shadow(0 0 8px #25f252);" />
+          <circle cx="114" cy="134" r="2" fill="#ffffff" />
+        </svg>
+      `;
+    } else if (level.enemySvg === 'droid-training') {
       svgContent = `
         <svg viewBox="0 0 190 220" class="enemy-svg anim-hover">
           <defs>
@@ -1370,14 +1518,16 @@ class JediMathGame {
     this.enemyHp = Math.max(0, this.enemyHp - 1);
     this.updateHpBars();
 
-    if (level.style === 'blaster') {
+    if (level.style === 'blaster' || level.style === 'ship') {
       this.audio.playBlasterFire();
       if (this.vfx) {
-        this.vfx.fireLaser(true, this.selectedCrystal.color, (hitX, hitY) => {
-          this.vfx.spawnSparks(hitX, hitY, '#ffe81f', 30);
+        const laserColor = level.style === 'ship' ? '#ff3344' : this.selectedCrystal.color;
+        this.vfx.fireLaser(true, laserColor, (hitX, hitY) => {
+          this.vfx.spawnSparks(hitX, hitY, '#ffe81f', 32);
           this.audio.playDamageHit();
         });
-        this.vfx.addFloatingText(`CELNY STRZAŁ! -1 ŻYCIE (+${points})`, this.vfx.width * 0.65, 170, '#ffe81f');
+        const hitMsg = level.style === 'ship' ? `SALWA X-WINGA! -1 ŻYCIE (+${points})` : `CELNY STRZAŁ! -1 ŻYCIE (+${points})`;
+        this.vfx.addFloatingText(hitMsg, this.vfx.width * 0.65, 170, '#ffe81f');
       }
     } else {
       this.audio.playSaberSwing();
@@ -1413,15 +1563,17 @@ class JediMathGame {
     this.playerHp = Math.max(0, this.playerHp - 1);
     this.updateHpBars();
 
-    if (level.style === 'blaster') {
+    if (level.style === 'blaster' || level.style === 'ship') {
       this.audio.playBlasterFire();
       if (this.vfx) {
-        this.vfx.fireLaser(false, '#ff2a4b', (hitX, hitY) => {
-          this.vfx.spawnSparks(hitX, hitY, '#ff2a4b', 30);
+        const enemyLaser = level.style === 'ship' ? '#25f252' : '#ff2a4b';
+        this.vfx.fireLaser(false, enemyLaser, (hitX, hitY) => {
+          this.vfx.spawnSparks(hitX, hitY, enemyLaser, 32);
           this.audio.playDamageHit();
         });
         this.vfx.screenShake(16, 400);
-        this.vfx.addFloatingText('BŁĄD! STRZAŁ WROGA! -1 ŻYCIE', this.vfx.width * 0.35, 170, '#ff2a4b');
+        const errText = level.style === 'ship' ? 'BŁĄD! OSTRZAŁ TIE FIGHTERA! -1 ŻYCIE' : 'BŁĄD! STRZAŁ WROGA! -1 ŻYCIE';
+        this.vfx.addFloatingText(errText, this.vfx.width * 0.35, 170, '#ff2a4b');
       }
     } else {
       this.audio.playSaberSwing();
