@@ -218,8 +218,12 @@ class JediMathGame {
     const blades = document.querySelectorAll('.lightsaber-blade');
     blades.forEach(blade => {
       blade.style.setProperty('--blade-color', this.selectedCrystal.color);
-      blade.style.boxShadow = `0 0 12px ${this.selectedCrystal.color}, 0 0 28px ${this.selectedCrystal.color}`;
+      blade.setAttribute('stroke', this.selectedCrystal.color);
+      blade.style.filter = `url(#hero-saber-glow) drop-shadow(0 0 16px ${this.selectedCrystal.color}) drop-shadow(0 0 28px ${this.selectedCrystal.color})`;
     });
+    if (this.screenBattle && !this.screenBattle.classList.contains('hidden') && GAME_DATA.levels[this.currentLevelIndex]) {
+      this.renderPlayerAvatar(GAME_DATA.levels[this.currentLevelIndex]);
+    }
   }
 
   renderLevelMap() {
@@ -286,6 +290,13 @@ class JediMathGame {
     this.elPhaseTitle.textContent = '⚡ ROZWIĄŻ DZIAŁANIE I ODDAJ STRZAŁ!';
     this.elPhaseTitle.className = 'phase-attack';
 
+    // Apply planet background class & render backdrop scenery
+    const arenaEl = document.getElementById('battle-arena');
+    if (arenaEl) {
+      arenaEl.className = `arena-stage ${level.backgroundClass || 'bg-coruscant'}`;
+    }
+    this.renderPlanetBackdrop(level);
+
     // Render Characters
     this.renderEnemyAvatar(level);
     this.renderPlayerAvatar(level);
@@ -301,6 +312,387 @@ class JediMathGame {
     this.newQuestion();
   }
 
+  renderPlanetBackdrop(level) {
+    const backdropEl = document.getElementById('arena-backdrop');
+    if (!backdropEl) return;
+
+    if (level.backgroundClass === 'bg-coruscant') {
+      backdropEl.innerHTML = this.renderCoruscantBackdrop();
+    } else if (level.backgroundClass === 'bg-tatooine') {
+      backdropEl.innerHTML = this.renderTatooineBackdrop();
+    } else if (level.backgroundClass === 'bg-hoth') {
+      backdropEl.innerHTML = this.renderHothBackdrop();
+    } else if (level.backgroundClass === 'bg-bespin') {
+      backdropEl.innerHTML = this.renderBespinBackdrop();
+    } else if (level.backgroundClass === 'bg-deathstar') {
+      backdropEl.innerHTML = this.renderDeathStarBackdrop();
+    } else {
+      backdropEl.innerHTML = this.renderCoruscantBackdrop();
+    }
+  }
+
+  renderCoruscantBackdrop() {
+    return `
+      <svg viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid slice" class="backdrop-svg">
+        <defs>
+          <linearGradient id="coruscant-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#050713" />
+            <stop offset="55%" stop-color="#121835" />
+            <stop offset="100%" stop-color="#2c1f4e" />
+          </linearGradient>
+          <linearGradient id="temple-beam" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#00d0ff" stop-opacity="0.6" />
+            <stop offset="70%" stop-color="#00d0ff" stop-opacity="0.15" />
+            <stop offset="100%" stop-color="#00d0ff" stop-opacity="0" />
+          </linearGradient>
+          <linearGradient id="neon-haze" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#ff3366" stop-opacity="0.25" />
+            <stop offset="50%" stop-color="#4deeea" stop-opacity="0.1" />
+            <stop offset="100%" stop-color="transparent" />
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="400" fill="url(#coruscant-sky)" />
+        
+        <!-- Distant Coruscant Moon & Stars -->
+        <circle cx="820" cy="70" r="28" fill="#e2e8f8" opacity="0.4" style="filter: drop-shadow(0 0 15px rgba(226,232,248,0.5));" />
+        <circle cx="826" cy="66" r="24" fill="#0c1026" />
+        
+        <!-- Far Spire Silhouettes -->
+        <path d="M0,280 L40,240 L55,240 L70,280 L120,280 L140,210 L160,210 L175,280 L230,280 L250,180 L265,180 L280,280 L350,280 L370,160 L385,160 L400,280 L460,280 L480,220 L500,220 L515,280 L590,280 L610,170 L630,170 L645,280 L720,280 L740,200 L760,200 L775,280 L840,280 L860,190 L880,190 L895,280 L1000,280 L1000,400 L0,400 Z" fill="#0d122b" opacity="0.6" />
+        
+        <!-- Flying Speeder Traffic Streams -->
+        <line x1="0" y1="230" x2="1000" y2="230" stroke="#ffb703" stroke-width="1.8" stroke-dasharray="8 36" opacity="0.75" />
+        <line x1="0" y1="250" x2="1000" y2="250" stroke="#00e5ff" stroke-width="1.6" stroke-dasharray="14 45" opacity="0.7" />
+        <line x1="0" y1="210" x2="1000" y2="210" stroke="#ff385c" stroke-width="1.5" stroke-dasharray="6 50" opacity="0.6" />
+
+        <!-- Mid-ground Metropolis Towers with Windows -->
+        <g fill="#141a3d">
+          <rect x="30" y="190" width="65" height="210" rx="3" />
+          <rect x="110" y="150" width="80" height="250" rx="4" />
+          <line x1="150" y1="150" x2="150" y2="105" stroke="#4a5578" stroke-width="2" />
+          <circle cx="150" cy="103" r="3" fill="#ff2a4b" />
+          
+          <rect x="220" y="170" width="75" height="230" rx="3" />
+          
+          <!-- Jedi Temple Centerpiece -->
+          <polygon points="440,320 460,200 480,200 485,320" fill="#1b234f" />
+          <polygon points="515,320 520,200 540,200 560,320" fill="#1b234f" />
+          <polygon points="475,320 490,165 510,165 525,320" fill="#202a5c" />
+          <polygon points="460,320 500,210 540,320" fill="#26326d" />
+          <polygon points="492,165 500,90 508,165" fill="#2e3c82" />
+          
+          <rect x="710" y="140" width="85" height="260" rx="4" />
+          <line x1="752" y1="140" x2="752" y2="95" stroke="#4a5578" stroke-width="2" />
+          <circle cx="752" cy="93" r="3" fill="#00d0ff" />
+          <rect x="825" y="175" width="70" height="225" rx="3" />
+          <rect x="915" y="130" width="75" height="270" rx="4" />
+        </g>
+        
+        <!-- Jedi Temple Blue Force Beacon Beams -->
+        <polygon points="496,90 470,0 530,0 504,90" fill="url(#temple-beam)" />
+
+        <!-- Illuminated Tower Windows -->
+        <g fill="#ffd000" opacity="0.65">
+          <circle cx="130" cy="180" r="1.5" /><circle cx="150" cy="180" r="1.5" /><circle cx="170" cy="180" r="1.5" />
+          <circle cx="130" cy="205" r="1.5" /><circle cx="150" cy="205" r="1.5" /><circle cx="170" cy="205" r="1.5" />
+          <circle cx="130" cy="230" r="1.5" /><circle cx="150" cy="230" r="1.5" /><circle cx="170" cy="230" r="1.5" />
+          <circle cx="730" cy="170" r="1.5" /><circle cx="750" cy="170" r="1.5" /><circle cx="770" cy="170" r="1.5" />
+          <circle cx="730" cy="195" r="1.5" /><circle cx="750" cy="195" r="1.5" /><circle cx="770" cy="195" r="1.5" />
+          <circle cx="935" cy="160" r="1.5" /><circle cx="955" cy="160" r="1.5" /><circle cx="975" cy="160" r="1.5" />
+        </g>
+        <g fill="#00e5ff" opacity="0.6">
+          <circle cx="50" cy="210" r="1.5" /><circle cx="70" cy="210" r="1.5" />
+          <circle cx="240" cy="195" r="1.5" /><circle cx="260" cy="195" r="1.5" />
+          <circle cx="845" cy="200" r="1.5" /><circle cx="865" cy="200" r="1.5" />
+        </g>
+        
+        <!-- Neon Lower Atmosphere Glow -->
+        <rect y="270" width="1000" height="130" fill="url(#neon-haze)" />
+      </svg>
+    `;
+  }
+
+  renderTatooineBackdrop() {
+    return `
+      <svg viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid slice" class="backdrop-svg">
+        <defs>
+          <linearGradient id="tatooine-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1d0a28" />
+            <stop offset="35%" stop-color="#561734" />
+            <stop offset="68%" stop-color="#b6441b" />
+            <stop offset="88%" stop-color="#f3922c" />
+            <stop offset="100%" stop-color="#ffd568" />
+          </linearGradient>
+          <linearGradient id="dune-1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#df7e32" />
+            <stop offset="100%" stop-color="#7e3217" />
+          </linearGradient>
+          <linearGradient id="dune-2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#b45923" />
+            <stop offset="100%" stop-color="#541b0b" />
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="400" fill="url(#tatooine-sky)" />
+
+        <!-- Twin Suns of Tatooine -->
+        <!-- Primary Sun: Tatoo I (bright golden white) -->
+        <circle cx="720" cy="100" r="34" fill="#fffcee" style="filter: drop-shadow(0 0 24px rgba(255, 230, 120, 0.95)) drop-shadow(0 0 50px rgba(255, 180, 50, 0.6));" />
+        <!-- Secondary Sun: Tatoo II (reddish orange) -->
+        <circle cx="805" cy="150" r="22" fill="#ff4d29" style="filter: drop-shadow(0 0 18px rgba(255, 77, 41, 0.85)) drop-shadow(0 0 35px rgba(255, 40, 20, 0.5));" />
+
+        <!-- Distant Rocky Canyon Mesas -->
+        <polygon points="0,270 90,230 160,230 210,270" fill="#6d2426" opacity="0.75" />
+        <polygon points="180,270 250,210 360,210 420,270" fill="#7d2827" opacity="0.7" />
+        <polygon points="560,280 640,225 740,225 810,280" fill="#6d2426" opacity="0.65" />
+        <polygon points="850,280 920,240 990,240 1000,270" fill="#601e25" opacity="0.7" />
+
+        <!-- Sandcrawler Silhouette on Horizon -->
+        <polygon points="340,252 385,250 395,257 395,263 335,263 335,257" fill="#3a1312" opacity="0.8" />
+        <circle cx="342" cy="255" r="1.5" fill="#ffd000" opacity="0.8" />
+
+        <!-- Sweeping Sand Dunes Layer 1 -->
+        <path d="M-50,300 Q200,230 450,290 T950,270 L1050,400 L-50,400 Z" fill="url(#dune-1)" />
+
+        <!-- Moisture Vaporators Silhouettes -->
+        <g stroke="#3a140d" stroke-width="2.5" fill="none">
+          <line x1="160" y1="300" x2="160" y2="245" />
+          <line x1="152" y1="255" x2="168" y2="255" />
+          <line x1="154" y1="270" x2="166" y2="270" />
+          <circle cx="160" cy="242" r="3" fill="#3a140d" />
+
+          <line x1="880" y1="310" x2="880" y2="260" />
+          <line x1="873" y1="270" x2="887" y2="270" />
+          <circle cx="880" cy="258" r="2.5" fill="#3a140d" />
+        </g>
+
+        <!-- Foreground Dunes Layer 2 -->
+        <path d="M-20,340 Q300,280 650,350 T1050,320 L1050,400 L-20,400 Z" fill="url(#dune-2)" />
+      </svg>
+    `;
+  }
+
+  renderHothBackdrop() {
+    return `
+      <svg viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid slice" class="backdrop-svg">
+        <defs>
+          <linearGradient id="hoth-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#020914" />
+            <stop offset="50%" stop-color="#091f35" />
+            <stop offset="100%" stop-color="#0f3453" />
+          </linearGradient>
+          <linearGradient id="aurora" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#00ffd5" stop-opacity="0" />
+            <stop offset="30%" stop-color="#00ffd5" stop-opacity="0.5" />
+            <stop offset="55%" stop-color="#25f252" stop-opacity="0.6" />
+            <stop offset="80%" stop-color="#00b4d8" stop-opacity="0.4" />
+            <stop offset="100%" stop-color="#00ffd5" stop-opacity="0" />
+          </linearGradient>
+          <linearGradient id="glacier-ice" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#c6ecff" />
+            <stop offset="40%" stop-color="#5ea8d4" />
+            <stop offset="100%" stop-color="#16395b" />
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="400" fill="url(#hoth-sky)" />
+
+        <!-- Twinkling Arctic Stars -->
+        <g fill="#ffffff">
+          <circle cx="120" cy="50" r="1.5" opacity="0.8" /><circle cx="280" cy="35" r="1" opacity="0.6" />
+          <circle cx="450" cy="65" r="1.5" opacity="0.9" /><circle cx="680" cy="40" r="1" opacity="0.7" />
+          <circle cx="890" cy="55" r="1.5" opacity="0.8" /><circle cx="940" cy="85" r="1" opacity="0.5" />
+        </g>
+
+        <!-- Ethereal Aurora Borealis Waves -->
+        <path d="M0,80 Q250,30 500,75 T1000,45 L1000,140 Q750,90 500,135 T0,110 Z" fill="url(#aurora)" filter="blur(16px)" opacity="0.75" />
+        <path d="M0,60 Q300,105 600,50 T1000,80 L1000,120 Q700,90 400,130 T0,90 Z" fill="url(#aurora)" filter="blur(10px)" opacity="0.6" />
+
+        <!-- Distant Jagged Glaciers -->
+        <polygon points="0,260 70,165 140,260" fill="#1b456e" opacity="0.7" />
+        <polygon points="110,260 210,140 310,260" fill="#255887" opacity="0.75" />
+        <polygon points="280,260 400,120 520,260" fill="#2d689e" opacity="0.8" />
+        <polygon points="490,260 590,150 700,260" fill="#255887" opacity="0.75" />
+        <polygon points="660,260 770,130 890,260" fill="#2d689e" opacity="0.8" />
+        <polygon points="850,260 930,175 1000,260" fill="#1b456e" opacity="0.7" />
+
+        <!-- Snow Mountain Crest Highlights -->
+        <polygon points="380,140 400,120 420,140 400,148" fill="#e6f7ff" />
+        <polygon points="755,148 770,130 785,148 770,155" fill="#e6f7ff" />
+        <polygon points="198,155 210,140 222,155 210,162" fill="#e6f7ff" />
+
+        <!-- Echo Base Ion Cannon / Radar Crest on right ridge -->
+        <path d="M860,245 Q880,225 900,245 Z" fill="#0b1e33" />
+        <line x1="880" y1="225" x2="895" y2="200" stroke="#0b1e33" stroke-width="3" />
+
+        <!-- Mid-ground Snow Drifts & Ice Trench -->
+        <path d="M-30,290 Q220,230 520,285 T1030,265 L1030,400 L-30,400 Z" fill="url(#glacier-ice)" />
+        <!-- Frosty Foreground Shelf -->
+        <path d="M-20,340 Q350,295 720,350 T1040,325 L1040,400 L-20,400 Z" fill="#0d2640" />
+
+        <!-- Frost Crystals and Cold Mist -->
+        <ellipse cx="500" cy="385" rx="480" ry="25" fill="#70d6ff" opacity="0.12" filter="blur(15px)" />
+      </svg>
+    `;
+  }
+
+  renderBespinBackdrop() {
+    return `
+      <svg viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid slice" class="backdrop-svg">
+        <defs>
+          <linearGradient id="bespin-sky" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#170932" />
+            <stop offset="30%" stop-color="#4d165c" />
+            <stop offset="62%" stop-color="#9a296b" />
+            <stop offset="85%" stop-color="#dc6451" />
+            <stop offset="100%" stop-color="#fcb068" />
+          </linearGradient>
+          <linearGradient id="city-metallic" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#f0f4f8" />
+            <stop offset="45%" stop-color="#c4d1de" />
+            <stop offset="100%" stop-color="#738699" />
+          </linearGradient>
+          <linearGradient id="cloud-gold" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ffd285" stop-opacity="0.5" />
+            <stop offset="100%" stop-color="#731f4a" stop-opacity="0.9" />
+          </linearGradient>
+        </defs>
+        <rect width="1000" height="400" fill="url(#bespin-sky)" />
+
+        <!-- Deep Atmospheric Cloud Layers (Multi-tiered) -->
+        <ellipse cx="150" cy="240" rx="260" ry="65" fill="#581a4e" opacity="0.7" />
+        <ellipse cx="850" cy="220" rx="300" ry="75" fill="#581a4e" opacity="0.65" />
+        <ellipse cx="500" cy="270" rx="360" ry="85" fill="#75225a" opacity="0.6" />
+
+        <!-- Cloud City Floating Spire (Centerpiece) -->
+        <g transform="translate(430, 70)">
+          <!-- Cloud City Saucer Disc -->
+          <ellipse cx="70" cy="90" rx="90" ry="16" fill="url(#city-metallic)" style="filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));" />
+          <ellipse cx="70" cy="85" rx="72" ry="11" fill="#f8fafc" />
+          <!-- Upper Spire Towers & Domes -->
+          <ellipse cx="70" cy="81" rx="40" ry="6" fill="#e2e8f0" />
+          <rect x="67" y="42" width="6" height="40" fill="#cbd5e1" />
+          <circle cx="70" cy="40" r="5" fill="#f8fafc" />
+          <line x1="70" y1="40" x2="70" y2="18" stroke="#ffffff" stroke-width="2" />
+          <circle cx="70" cy="16" r="2.5" fill="#ff4d4d" />
+          
+          <!-- Lower Central Vane / Core Spire extending down -->
+          <polygon points="62,104 78,104 72,210 68,210" fill="#4a5568" />
+          <polygon points="68,104 72,104 71,240 69,240" fill="#2d3748" />
+
+          <!-- Lit Windows in the Saucer Perimeter -->
+          <g fill="#ffea79">
+            <circle cx="20" cy="91" r="1.5" /><circle cx="35" cy="93" r="1.5" /><circle cx="50" cy="94" r="1.5" />
+            <circle cx="70" cy="95" r="1.5" />
+            <circle cx="90" cy="94" r="1.5" /><circle cx="105" cy="93" r="1.5" /><circle cx="120" cy="91" r="1.5" />
+          </g>
+
+          <!-- Repulsor Engine Exhaust Glow beneath City -->
+          <ellipse cx="70" cy="115" rx="35" ry="8" fill="#ff7b00" opacity="0.75" filter="blur(6px)" />
+        </g>
+
+        <!-- Twin-Pod Cloud Cars Flying in Distance -->
+        <g fill="#df482b" opacity="0.85">
+          <ellipse cx="230" cy="160" rx="10" ry="4" /><ellipse cx="244" cy="160" rx="10" ry="4" />
+          <rect x="236" y="158" width="4" height="4" fill="#ffdd66" />
+        </g>
+        <g fill="#df482b" opacity="0.6">
+          <ellipse cx="780" cy="140" rx="7" ry="3" /><ellipse cx="790" cy="140" rx="7" ry="3" />
+        </g>
+
+        <!-- Billowy Sunset Cloud Banks in Foreground -->
+        <path d="M-50,300 Q150,250 350,290 Q550,240 750,295 Q900,260 1050,300 L1050,400 L-50,400 Z" fill="url(#cloud-gold)" />
+        <ellipse cx="300" cy="330" rx="220" ry="50" fill="#ffaa5e" opacity="0.4" filter="blur(14px)" />
+        <ellipse cx="750" cy="330" rx="250" ry="55" fill="#ffaa5e" opacity="0.35" filter="blur(16px)" />
+      </svg>
+    `;
+  }
+
+  renderDeathStarBackdrop() {
+    return `
+      <svg viewBox="0 0 1000 400" preserveAspectRatio="xMidYMid slice" class="backdrop-svg">
+        <defs>
+          <radialGradient id="space-viewport" cx="50%" cy="45%" r="60%">
+            <stop offset="0%" stop-color="#0e172a" />
+            <stop offset="45%" stop-color="#070c18" />
+            <stop offset="100%" stop-color="#030408" />
+          </radialGradient>
+          <linearGradient id="imperial-wall" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#2a303c" />
+            <stop offset="50%" stop-color="#171b23" />
+            <stop offset="100%" stop-color="#0f1117" />
+          </linearGradient>
+          <linearGradient id="reactor-core-glow" x1="0" y1="1" x2="0" y2="0">
+            <stop offset="0%" stop-color="#25f252" stop-opacity="0.35" />
+            <stop offset="60%" stop-color="#00ffd5" stop-opacity="0.1" />
+            <stop offset="100%" stop-color="transparent" />
+          </linearGradient>
+        </defs>
+
+        <!-- Outer Imperial Bulkhead Frame -->
+        <rect width="1000" height="400" fill="#090c12" />
+
+        <!-- Deep Space View Through Center Viewport -->
+        <circle cx="500" cy="180" r="170" fill="url(#space-viewport)" />
+
+        <!-- Stars & Distant Green Superlaser / Endor in Viewport -->
+        <circle cx="430" cy="130" r="30" fill="#144b44" opacity="0.6" style="filter: drop-shadow(0 0 15px rgba(20,75,68,0.8));" />
+        <g fill="#ffffff">
+          <circle cx="390" cy="90" r="1.5" opacity="0.9" /><circle cx="580" cy="110" r="1.2" opacity="0.8" />
+          <circle cx="480" cy="70" r="1" opacity="0.6" /><circle cx="540" cy="160" r="1.5" opacity="0.9" />
+          <circle cx="430" cy="210" r="1" opacity="0.7" /><circle cx="600" cy="220" r="1.2" opacity="0.8" />
+        </g>
+
+        <!-- Iconic Throne Room Webbed Viewport Struts (Imperial Radial Architecture) -->
+        <g stroke="#262d3d" stroke-width="6" fill="none">
+          <!-- Viewport Outer Circle -->
+          <circle cx="500" cy="180" r="170" stroke="#374151" stroke-width="8" />
+          <circle cx="500" cy="180" r="115" stroke="#1f2937" stroke-width="4" />
+          <circle cx="500" cy="180" r="55" stroke="#1f2937" stroke-width="3" />
+          <!-- Radial Web Spokes -->
+          <line x1="500" y1="10" x2="500" y2="350" />
+          <line x1="330" y1="180" x2="670" y2="180" />
+          <line x1="380" y1="60" x2="620" y2="300" />
+          <line x1="380" y1="300" x2="620" y2="60" />
+        </g>
+
+        <!-- Flanking Imperial Walls with Classic Pill Light Panels -->
+        <!-- Left Wall -->
+        <rect x="0" y="0" width="220" height="400" fill="url(#imperial-wall)" />
+        <line x1="220" y1="0" x2="220" y2="400" stroke="#3a4454" stroke-width="4" />
+        <!-- Left Classic Imperial Pill Lights -->
+        <g fill="#e2e8f0" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));">
+          <rect x="60" y="60" width="18" height="38" rx="9" />
+          <rect x="60" y="115" width="18" height="38" rx="9" />
+          <rect x="60" y="170" width="18" height="38" rx="9" />
+          <rect x="60" y="225" width="18" height="38" rx="9" />
+          <rect x="110" y="90" width="16" height="34" rx="8" />
+          <rect x="110" y="145" width="16" height="34" rx="8" />
+          <rect x="110" y="200" width="16" height="34" rx="8" />
+        </g>
+        <!-- Left Red Alert Console Light -->
+        <rect x="160" y="140" width="14" height="28" rx="7" fill="#ff2a4b" style="filter: drop-shadow(0 0 10px #ff2a4b);" />
+
+        <!-- Right Wall -->
+        <rect x="780" y="0" width="220" height="400" fill="url(#imperial-wall)" />
+        <line x1="780" y1="0" x2="780" y2="400" stroke="#3a4454" stroke-width="4" />
+        <!-- Right Classic Imperial Pill Lights -->
+        <g fill="#e2e8f0" style="filter: drop-shadow(0 0 8px rgba(255,255,255,0.7));">
+          <rect x="920" y="60" width="18" height="38" rx="9" />
+          <rect x="920" y="115" width="18" height="38" rx="9" />
+          <rect x="920" y="170" width="18" height="38" rx="9" />
+          <rect x="920" y="225" width="18" height="38" rx="9" />
+          <rect x="870" y="90" width="16" height="34" rx="8" />
+          <rect x="870" y="145" width="16" height="34" rx="8" />
+          <rect x="870" y="200" width="16" height="34" rx="8" />
+        </g>
+        <!-- Right Red Alert Console Light -->
+        <rect x="825" y="140" width="14" height="28" rx="7" fill="#ff2a4b" style="filter: drop-shadow(0 0 10px #ff2a4b);" />
+
+        <!-- Green Superlaser Reactor Shaft Glow in Lower Floor -->
+        <rect y="290" width="1000" height="110" fill="url(#reactor-core-glow)" />
+      </svg>
+    `;
+  }
+
   renderPlayerAvatar(level) {
     const container = document.getElementById('player-avatar-box');
     const saberColor = this.selectedCrystal.color;
@@ -308,25 +700,157 @@ class JediMathGame {
 
     container.innerHTML = `
       <div class="combatant-figure player-figure ${isSaber ? 'stance-saber' : 'stance-blaster'}">
-        <svg viewBox="0 0 160 220" class="hero-svg">
-          <path d="M 50,110 Q 80,95 110,110 L 125,210 L 35,210 Z" fill="#3d2c1e" />
-          <path d="M 60,110 L 80,180 L 100,110" stroke="#7d583b" stroke-width="4" fill="none" />
-          <polygon points="65,110 80,145 95,110" fill="#ccab80" />
-          <rect x="48" y="145" width="64" height="12" rx="3" fill="#20150d" />
-          <rect x="74" y="143" width="12" height="16" rx="2" fill="#d4af37" />
-          
-          <ellipse cx="80" cy="72" rx="22" ry="26" fill="#f7c8a0" />
-          <path d="M 55,68 Q 80,40 105,68 Q 98,52 80,50 Q 62,52 55,68 Z" fill="#4a2e18" />
-          <circle cx="73" cy="72" r="2.5" fill="#1b120c" />
-          <circle cx="87" cy="72" r="2.5" fill="#1b120c" />
+        <svg viewBox="0 0 180 230" class="hero-svg">
+          <defs>
+            <filter id="hero-saber-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <linearGradient id="cloak-grad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#4a2e1b" />
+              <stop offset="60%" stop-color="#341e10" />
+              <stop offset="100%" stop-color="#221309" />
+            </linearGradient>
+            <linearGradient id="tunic-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ebe0c8" />
+              <stop offset="100%" stop-color="#c1ae8d" />
+            </linearGradient>
+            <linearGradient id="skin-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ffdfc4" />
+              <stop offset="100%" stop-color="#f2be9b" />
+            </linearGradient>
+            <linearGradient id="hair-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#6a3e20" />
+              <stop offset="50%" stop-color="#492913" />
+              <stop offset="100%" stop-color="#2e1808" />
+            </linearGradient>
+            <linearGradient id="hilt-metal" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="#8a95a5" />
+              <stop offset="50%" stop-color="#d0d7de" />
+              <stop offset="100%" stop-color="#555d69" />
+            </linearGradient>
+            <linearGradient id="blaster-metal" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#3e4451" />
+              <stop offset="100%" stop-color="#1e222b" />
+            </linearGradient>
+          </defs>
 
+          <!-- Outer Jedi Cloak Drapery -->
+          <path d="M 42,105 Q 85,88 128,105 L 146,215 Q 85,225 24,215 Z" fill="url(#cloak-grad)" />
+          <!-- Cloak Inner Shoulder Folds -->
+          <path d="M 50,110 L 32,205 L 55,212 Z" fill="#221309" opacity="0.6" />
+          <path d="M 120,110 L 138,205 L 115,212 Z" fill="#221309" opacity="0.6" />
+
+          <!-- Inner Jedi Crossing Tunic -->
+          <path d="M 56,108 L 85,175 L 114,108 Z" fill="url(#tunic-grad)" />
+          <path d="M 64,108 L 85,152 L 106,108" stroke="#a49171" stroke-width="2" fill="none" />
+          <!-- Under-collar / Tabard -->
+          <polygon points="72,108 85,130 98,108" fill="#5c381e" />
+
+          <!-- Jedi Leather Utility Belt -->
+          <rect x="48" y="146" width="74" height="15" rx="3" fill="#23140a" />
+          <line x1="48" y1="153" x2="122" y2="153" stroke="#3a2213" stroke-width="1.5" />
+          <!-- Belt Buckle -->
+          <rect x="77" y="144" width="16" height="19" rx="3" fill="#d4af37" stroke="#aa8c2c" stroke-width="1" />
+          <circle cx="85" cy="153.5" r="3.5" fill="#23140a" />
+          <!-- Food/Energy Silver Capsules on Belt -->
+          <rect x="54" y="148" width="4" height="11" rx="1.5" fill="#c0c7d0" />
+          <rect x="62" y="148" width="4" height="11" rx="1.5" fill="#c0c7d0" />
+          <rect x="104" y="148" width="4" height="11" rx="1.5" fill="#c0c7d0" />
+          <rect x="112" y="148" width="4" height="11" rx="1.5" fill="#c0c7d0" />
+
+          <!-- Lower Robes / Boots -->
+          <path d="M 60,161 L 54,222 L 78,222 L 82,161 Z" fill="#2c1a0e" />
+          <path d="M 88,161 L 92,222 L 116,222 L 110,161 Z" fill="#2c1a0e" />
+          <rect x="52" y="212" width="28" height="10" rx="3" fill="#180e08" />
+          <rect x="90" y="212" width="28" height="10" rx="3" fill="#180e08" />
+
+          <!-- Neck -->
+          <rect x="77" y="90" width="16" height="20" rx="4" fill="url(#skin-grad)" />
+
+          <!-- Head & Face -->
+          <ellipse cx="85" cy="74" rx="23" ry="26" fill="url(#skin-grad)" />
+          
+          <!-- Heroic Eyebrows -->
+          <path d="M 68,64 Q 77,60 81,63" stroke="#492913" stroke-width="2.5" stroke-linecap="round" fill="none" />
+          <path d="M 89,63 Q 93,60 102,64" stroke="#492913" stroke-width="2.5" stroke-linecap="round" fill="none" />
+
+          <!-- Expressive Eyes -->
+          <ellipse cx="75" cy="72" rx="4.5" ry="5.5" fill="#ffffff" />
+          <circle cx="75.5" cy="72.5" r="3.5" fill="#1b120c" />
+          <circle cx="74" cy="70.5" r="1.3" fill="#ffffff" />
+
+          <ellipse cx="95" cy="72" rx="4.5" ry="5.5" fill="#ffffff" />
+          <circle cx="94.5" cy="72.5" r="3.5" fill="#1b120c" />
+          <circle cx="93" cy="70.5" r="1.3" fill="#ffffff" />
+
+          <!-- Nose & Smile -->
+          <path d="M 84,77 Q 85,81 86,81" stroke="#d49b77" stroke-width="1.8" fill="none" stroke-linecap="round" />
+          <path d="M 78,87 Q 85,93 92,87" stroke="#9e583c" stroke-width="2" fill="none" stroke-linecap="round" />
+          
+          <!-- Cheeks blush -->
+          <circle cx="68" cy="78" r="4" fill="#ff7675" opacity="0.3" />
+          <circle cx="102" cy="78" r="4" fill="#ff7675" opacity="0.3" />
+
+          <!-- Jedi Padawan Hair with Highlights -->
+          <path d="M 58,68 C 55,42 75,32 85,32 C 95,32 115,42 112,68 C 108,52 95,45 85,46 C 75,45 62,52 58,68 Z" fill="url(#hair-grad)" />
+          <path d="M 62,62 Q 78,44 88,48 Q 98,44 108,62 Q 95,50 85,51 Q 75,50 62,62 Z" fill="#784928" opacity="0.7" />
+          <!-- Padawan Braid -->
+          <path d="M 106,75 Q 112,90 108,108 Q 112,112 110,118" stroke="#492913" stroke-width="3" fill="none" stroke-linecap="round" />
+          <circle cx="110" cy="118" r="2" fill="#d4af37" />
+
+          <!-- WEAPON: LIGHTSABER OR BLASTER -->
           ${isSaber ? `
-            <rect x="106" y="95" width="8" height="26" rx="2" fill="#888899" stroke="#333" stroke-width="1" />
-            <line x1="110" y1="95" x2="135" y2="15" stroke="${saberColor}" stroke-width="6" stroke-linecap="round" class="lightsaber-blade" style="filter: drop-shadow(0 0 10px ${saberColor}) drop-shadow(0 0 20px ${saberColor});" />
-            <line x1="110" y1="95" x2="135" y2="15" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+            <!-- Left Hand holding base -->
+            <ellipse cx="114" cy="120" rx="6" ry="7" fill="url(#skin-grad)" />
+            <!-- Right Hand holding hilt -->
+            <ellipse cx="120" cy="108" rx="7" ry="8" fill="url(#skin-grad)" />
+
+            <!-- Lightsaber Hilt -->
+            <g transform="rotate(-15, 122, 110)">
+              <!-- Hilt Body -->
+              <rect x="117" y="92" width="10" height="34" rx="2" fill="url(#hilt-metal)" stroke="#2b313a" stroke-width="1" />
+              <!-- Black Grip Ribs -->
+              <line x1="117" y1="106" x2="127" y2="106" stroke="#1a1e24" stroke-width="2" />
+              <line x1="117" y1="111" x2="127" y2="111" stroke="#1a1e24" stroke-width="2" />
+              <line x1="117" y1="116" x2="127" y2="116" stroke="#1a1e24" stroke-width="2" />
+              <line x1="117" y1="121" x2="127" y2="121" stroke="#1a1e24" stroke-width="2" />
+              <!-- Activation Switch Box -->
+              <rect x="115" y="100" width="4" height="6" fill="#d4af37" />
+              <circle cx="117" cy="103" r="1" fill="#ff2a4b" />
+              <!-- Emitter Shroud -->
+              <polygon points="115,92 129,92 126,84 118,84" fill="#bcc5cf" stroke="#333" stroke-width="1" />
+              
+              <!-- GLOWING LIGHTSABER BLADE -->
+              <line x1="122" y1="84" x2="152" y2="6" stroke="${saberColor}" stroke-width="10" stroke-linecap="round" class="lightsaber-blade" style="filter: url(#hero-saber-glow) drop-shadow(0 0 16px ${saberColor}) drop-shadow(0 0 28px ${saberColor});" />
+              <line x1="122" y1="84" x2="152" y2="6" stroke="${saberColor}" stroke-width="6" stroke-linecap="round" />
+              <line x1="122" y1="84" x2="152" y2="6" stroke="#ffffff" stroke-width="2.8" stroke-linecap="round" />
+            </g>
           ` : `
-            <path d="M 104,115 L 130,115 L 130,122 L 122,122 L 120,135 L 112,135 L 114,122 Z" fill="#2a2e3d" stroke="#5b647d" stroke-width="1.5" />
-            <circle cx="132" cy="118.5" r="3" fill="#00d0ff" style="filter: drop-shadow(0 0 6px #00d0ff);" />
+            <!-- Hand gripping blaster -->
+            <ellipse cx="118" cy="118" rx="8" ry="7" fill="url(#skin-grad)" />
+            <!-- DL-44 Heavy Blaster Pistol -->
+            <g transform="translate(112, 102)">
+              <!-- Handle Grip -->
+              <rect x="0" y="14" width="8" height="18" rx="2" fill="#4a2e1b" transform="rotate(-15, 4, 20)" stroke="#1a120c" stroke-width="1" />
+              <!-- Receiver Body -->
+              <rect x="2" y="8" width="30" height="12" rx="2" fill="url(#blaster-metal)" stroke="#111317" stroke-width="1" />
+              <!-- Scope Mount & Optical Scope -->
+              <rect x="6" y="2" width="22" height="5" rx="2" fill="#555d69" />
+              <circle cx="28" cy="4.5" r="3" fill="#00d0ff" style="filter: drop-shadow(0 0 4px #00d0ff);" />
+              <!-- Barrel and Flash Suppressor Muzzle -->
+              <rect x="32" y="11" width="16" height="6" fill="#8a95a5" />
+              <polygon points="48,9 56,8 56,19 48,18" fill="#555d69" />
+              <!-- Power Pack Glow / Muzzle Tip -->
+              <circle cx="20" cy="14" r="3" fill="#00d0ff" opacity="0.8" />
+              <circle cx="56" cy="13.5" r="3.5" fill="#00d0ff" style="filter: drop-shadow(0 0 8px #00d0ff) drop-shadow(0 0 14px #00d0ff);" />
+              <circle cx="56" cy="13.5" r="1.5" fill="#ffffff" />
+            </g>
           `}
         </svg>
       </div>
@@ -339,68 +863,356 @@ class JediMathGame {
 
     if (level.enemySvg === 'droid-training') {
       svgContent = `
-        <svg viewBox="0 0 180 200" class="enemy-svg anim-hover">
-          <circle cx="90" cy="100" r="42" fill="#5c6370" stroke="#282c34" stroke-width="3" />
-          <circle cx="90" cy="100" r="34" fill="#3e4451" />
-          <line x1="48" y1="100" x2="132" y2="100" stroke="#21252b" stroke-width="2" />
-          <line x1="90" y1="58" x2="90" y2="142" stroke="#21252b" stroke-width="2" />
-          <circle cx="75" cy="85" r="6" fill="#ff2a4b" style="filter: drop-shadow(0 0 8px #ff2a4b);" />
-          <circle cx="105" cy="85" r="5" fill="#4deeea" />
-          <circle cx="90" cy="115" r="9" fill="#00e5ff" style="filter: drop-shadow(0 0 10px #00e5ff);" />
-          <circle cx="90" cy="115" r="4" fill="#ffffff" />
-          <rect x="25" y="98" width="24" height="4" fill="#abb2bf" />
-          <rect x="131" y="98" width="24" height="4" fill="#abb2bf" />
+        <svg viewBox="0 0 190 220" class="enemy-svg anim-hover">
+          <defs>
+            <radialGradient id="droid-metal" cx="35%" cy="30%" r="70%">
+              <stop offset="0%" stop-color="#9da7b8" />
+              <stop offset="45%" stop-color="#555e6d" />
+              <stop offset="85%" stop-color="#2d333d" />
+              <stop offset="100%" stop-color="#191d24" />
+            </radialGradient>
+            <radialGradient id="lens-cyan" cx="35%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="35%" stop-color="#00f2fe" />
+              <stop offset="70%" stop-color="#0099cc" />
+              <stop offset="100%" stop-color="#003355" />
+            </radialGradient>
+          </defs>
+
+          <!-- Floating Repulsorlift Ion Ring underneath -->
+          <ellipse cx="95" cy="180" rx="38" ry="10" fill="none" stroke="#00d0ff" stroke-width="3" opacity="0.85" style="filter: drop-shadow(0 0 8px #00d0ff);" />
+          <ellipse cx="95" cy="180" rx="20" ry="5" fill="#00d0ff" opacity="0.4" style="filter: blur(4px);" />
+
+          <!-- Main Spherical Droid Body -->
+          <circle cx="95" cy="100" r="50" fill="url(#droid-metal)" stroke="#1a1e24" stroke-width="2" />
+          
+          <!-- Equatorial Groove Seam -->
+          <path d="M 46,98 C 65,108 125,108 144,98 C 125,103 65,103 46,98 Z" fill="#13171c" />
+          <path d="M 45,100 C 65,110 125,110 145,100" stroke="#717c8d" stroke-width="1.5" fill="none" />
+
+          <!-- Surface Rivets & Hex Panel Details -->
+          <circle cx="65" cy="72" r="2" fill="#adb5c2" /><circle cx="125" cy="72" r="2" fill="#adb5c2" />
+          <circle cx="65" cy="128" r="2" fill="#adb5c2" /><circle cx="125" cy="128" r="2" fill="#adb5c2" />
+          <circle cx="95" cy="55" r="2" fill="#adb5c2" />
+
+          <!-- Primary Large Optical Photoreceptor Lens -->
+          <circle cx="95" cy="98" r="18" fill="#10141a" stroke="#4a5361" stroke-width="2" />
+          <circle cx="95" cy="98" r="14" fill="url(#lens-cyan)" style="filter: drop-shadow(0 0 10px #00e5ff);" />
+          <circle cx="91" cy="94" r="3.5" fill="#ffffff" opacity="0.85" />
+
+          <!-- Secondary Sensors -->
+          <!-- Red Targeting Laser Node -->
+          <circle cx="70" cy="80" r="6.5" fill="#200508" stroke="#555" stroke-width="1" />
+          <circle cx="70" cy="80" r="4.5" fill="#ff2a4b" style="filter: drop-shadow(0 0 8px #ff2a4b);" />
+          <circle cx="68.5" cy="78.5" r="1.5" fill="#ffffff" />
+
+          <!-- Amber Scanner Aperture -->
+          <circle cx="118" cy="80" r="5" fill="#ffb703" style="filter: drop-shadow(0 0 6px #ffb703);" />
+
+          <!-- Green Status LED -->
+          <circle cx="95" cy="128" r="4" fill="#25f252" style="filter: drop-shadow(0 0 6px #25f252);" />
+
+          <!-- Mini Antenna Spire -->
+          <line x1="95" y1="50" x2="95" y2="28" stroke="#8a95a5" stroke-width="2.5" />
+          <circle cx="95" cy="26" r="3" fill="#ff2a4b" style="filter: drop-shadow(0 0 5px #ff2a4b);" />
+
+          <!-- Left & Right Blaster Nozzle Barrels -->
+          <rect x="22" y="96" width="24" height="8" rx="2" fill="#3a404d" stroke="#1f232b" stroke-width="1" />
+          <circle cx="21" cy="100" r="3" fill="#ff2a4b" style="filter: drop-shadow(0 0 6px #ff2a4b);" />
+          <rect x="144" y="96" width="24" height="8" rx="2" fill="#3a404d" stroke="#1f232b" stroke-width="1" />
+          <circle cx="169" cy="100" r="3" fill="#ff2a4b" style="filter: drop-shadow(0 0 6px #ff2a4b);" />
         </svg>
       `;
     } else if (level.enemySvg === 'droid-b1') {
       svgContent = `
-        <svg viewBox="0 0 180 220" class="enemy-svg">
-          <path d="M 80,45 Q 90,30 105,45 L 115,75 Q 95,85 85,80 Z" fill="#d6af79" stroke="#7d603a" stroke-width="2" />
-          <circle cx="100" cy="55" r="3.5" fill="#1b120c" />
-          <rect x="86" y="80" width="8" height="25" fill="#9e8055" />
-          <path d="M 70,105 L 110,105 L 105,160 L 75,160 Z" fill="#d6af79" stroke="#7d603a" stroke-width="2" />
-          <path d="M 70,110 L 50,140 L 80,145" stroke="#9e8055" stroke-width="5" fill="none" />
-          <rect x="40" y="138" width="60" height="9" fill="#222" rx="2" />
-          <rect x="30" y="140" width="15" height="5" fill="#ff4444" style="filter: drop-shadow(0 0 6px #ff4444);" />
+        <svg viewBox="0 0 190 230" class="enemy-svg">
+          <defs>
+            <linearGradient id="b1-tan" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#edd2a4" />
+              <stop offset="45%" stop-color="#d4af78" />
+              <stop offset="100%" stop-color="#8a673c" />
+            </linearGradient>
+            <linearGradient id="b1-joint" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#555d69" />
+              <stop offset="100%" stop-color="#2d333b" />
+            </linearGradient>
+          </defs>
+
+          <!-- Back Antenna Spire -->
+          <line x1="120" y1="85" x2="135" y2="25" stroke="#7d603a" stroke-width="3" />
+          <circle cx="136" cy="24" r="3" fill="#ff4444" style="filter: drop-shadow(0 0 5px #ff4444);" />
+
+          <!-- Back Comm Unit Backpack -->
+          <rect x="105" y="88" width="24" height="42" rx="4" fill="#a48152" stroke="#5d4323" stroke-width="1.5" />
+
+          <!-- Elongated B1 Droid Skull -->
+          <path d="M 72,40 C 72,25 106,20 114,35 C 122,50 118,72 108,76 C 96,80 72,65 72,40 Z" fill="url(#b1-tan)" stroke="#5d4323" stroke-width="2" />
+          <!-- Snout Extension -->
+          <path d="M 68,44 L 54,52 L 66,58 Z" fill="#d4af78" stroke="#5d4323" stroke-width="1.5" />
+          <!-- Photoreceptor Sensor Eyes -->
+          <circle cx="82" cy="46" r="4.5" fill="#1b120c" />
+          <circle cx="82" cy="46" r="2" fill="#ffd000" opacity="0.8" />
+          <circle cx="100" cy="44" r="4" fill="#1b120c" />
+          <circle cx="100" cy="44" r="1.8" fill="#ffd000" opacity="0.8" />
+
+          <!-- Neck Pistons & Articulated Spine -->
+          <rect x="90" y="74" width="7" height="24" rx="2" fill="url(#b1-joint)" />
+          <line x1="86" y1="78" x2="86" y2="96" stroke="#444" stroke-width="2" />
+
+          <!-- Torso Chest Chassis -->
+          <path d="M 72,98 L 115,98 L 108,145 L 78,145 Z" fill="url(#b1-tan)" stroke="#5d4323" stroke-width="2" />
+          <line x1="93" y1="98" x2="93" y2="145" stroke="#6b4c27" stroke-width="2" />
+          <rect x="80" y="106" width="26" height="6" rx="2" fill="#6b4c27" />
+
+          <!-- Hip & Pelvis Unit -->
+          <polygon points="76,145 110,145 104,165 82,165" fill="url(#b1-joint)" />
+
+          <!-- Skeletal Legs -->
+          <line x1="84" y1="165" x2="78" y2="215" stroke="#a48152" stroke-width="6" stroke-linecap="round" />
+          <line x1="102" y1="165" x2="108" y2="215" stroke="#a48152" stroke-width="6" stroke-linecap="round" />
+          <polygon points="68,222 88,222 82,213 72,213" fill="#6b4c27" />
+          <polygon points="100,222 120,222 114,213 104,213" fill="#6b4c27" />
+
+          <!-- Arms & E-11 Blaster Rifle in Aim Stance -->
+          <g transform="translate(15, 10)">
+            <!-- Left Arm -->
+            <path d="M 60,98 L 45,128 L 70,135" stroke="#a48152" stroke-width="6" stroke-linecap="round" fill="none" />
+            <!-- E-11 Blaster Carbine -->
+            <rect x="25" y="128" width="68" height="11" rx="2" fill="#1b1e24" stroke="#333a45" stroke-width="1.5" />
+            <rect x="42" y="122" width="22" height="6" rx="1.5" fill="#333a45" />
+            <rect x="20" y="130" width="8" height="7" fill="#555d69" />
+            <!-- Red Blaster Muzzle Charge -->
+            <circle cx="18" cy="133.5" r="4" fill="#ff2a4b" style="filter: drop-shadow(0 0 8px #ff2a4b);" />
+            <circle cx="18" cy="133.5" r="1.5" fill="#ffffff" />
+          </g>
         </svg>
       `;
     } else if (level.enemySvg === 'snowtrooper') {
       svgContent = `
-        <svg viewBox="0 0 180 220" class="enemy-svg">
-          <path d="M 68,55 Q 90,35 112,55 L 118,95 L 62,95 Z" fill="#f0f3f6" stroke="#9aa5b1" stroke-width="2" />
-          <rect x="73" y="65" width="34" height="7" rx="2" fill="#10151a" />
-          <path d="M 58,98 L 122,98 L 115,170 L 65,170 Z" fill="#e2e8f0" stroke="#718096" stroke-width="2" />
-          <rect x="80" y="112" width="20" height="28" fill="#4a5568" rx="3" />
-          <rect x="35" y="125" width="65" height="12" fill="#1a202c" rx="2" />
-          <circle cx="32" cy="131" r="5" fill="#ff3366" style="filter: drop-shadow(0 0 8px #ff3366);" />
+        <svg viewBox="0 0 190 230" class="enemy-svg">
+          <defs>
+            <linearGradient id="snow-armor" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="60%" stop-color="#e2e8f0" />
+              <stop offset="100%" stop-color="#a0aec0" />
+            </linearGradient>
+            <linearGradient id="snow-cowl" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#f8fafc" />
+              <stop offset="50%" stop-color="#e2e8f0" />
+              <stop offset="100%" stop-color="#94a3b8" />
+            </linearGradient>
+          </defs>
+
+          <!-- Snowtrooper Helmet Dome -->
+          <path d="M 64,52 C 64,28 126,28 126,52 L 128,78 L 62,78 Z" fill="url(#snow-armor)" stroke="#718096" stroke-width="2" />
+          <path d="M 72,42 Q 95,34 118,42" stroke="#ffffff" stroke-width="3" fill="none" />
+
+          <!-- Distinctive Cold-Assault Fabric Facemask / Cowl -->
+          <path d="M 60,74 L 130,74 L 138,125 Q 95,135 52,125 Z" fill="url(#snow-cowl)" stroke="#64748b" stroke-width="2" />
+          <!-- Cowl Fabric Folds -->
+          <path d="M 75,76 L 70,122" stroke="#cbd5e1" stroke-width="2" />
+          <path d="M 115,76 L 120,122" stroke="#cbd5e1" stroke-width="2" />
+
+          <!-- Dark Horizontal Visor Slit -->
+          <rect x="70" y="62" width="50" height="9" rx="2.5" fill="#0f172a" />
+          <line x1="72" y1="65" x2="116" y2="65" stroke="#ffffff" stroke-width="1.5" opacity="0.8" />
+
+          <!-- Hard Molded Chest Armor Unit -->
+          <path d="M 54,124 L 136,124 L 128,182 L 62,182 Z" fill="url(#snow-armor)" stroke="#64748b" stroke-width="2" />
+          <!-- Central Environmental Regulator Chest Box -->
+          <rect x="78" y="134" width="34" height="36" rx="4" fill="#334155" stroke="#1e293b" stroke-width="1.5" />
+          <!-- Regulator Control Buttons (Imperial Rank Status) -->
+          <circle cx="87" cy="144" r="3" fill="#ff2a4b" style="filter: drop-shadow(0 0 4px #ff2a4b);" />
+          <circle cx="103" cy="144" r="3" fill="#00d0ff" style="filter: drop-shadow(0 0 4px #00d0ff);" />
+          <rect x="83" y="156" width="24" height="6" rx="2" fill="#e2e8f0" />
+
+          <!-- Snow Kama (Insulated Combat Skirt) & Boots -->
+          <path d="M 60,182 L 52,224 L 138,224 L 130,182 Z" fill="#94a3b8" />
+          <rect x="58" y="214" width="28" height="12" rx="3" fill="#475569" />
+          <rect x="104" y="214" width="28" height="12" rx="3" fill="#475569" />
+
+          <!-- Aimed Heavy Blaster Rifle -->
+          <g transform="translate(10, 20)">
+            <rect x="22" y="125" width="70" height="14" rx="3" fill="#1e293b" stroke="#0f172a" stroke-width="2" />
+            <rect x="38" y="117" width="28" height="8" rx="2" fill="#475569" />
+            <line x1="42" y1="120" x2="62" y2="120" stroke="#00e5ff" stroke-width="2" />
+            <circle cx="18" cy="132" r="5" fill="#ff2a4b" style="filter: drop-shadow(0 0 10px #ff2a4b) drop-shadow(0 0 16px #ff2a4b);" />
+            <circle cx="18" cy="132" r="2" fill="#ffffff" />
+          </g>
         </svg>
       `;
     } else if (level.enemySvg === 'inquisitor') {
       svgContent = `
-        <svg viewBox="0 0 180 220" class="enemy-svg">
-          <path d="M 70,50 Q 90,32 110,50 L 116,90 L 64,90 Z" fill="#1a1c23" stroke="#ff2a4b" stroke-width="1.5" />
-          <line x1="72" y1="68" x2="108" y2="68" stroke="#ff0055" stroke-width="3.5" style="filter: drop-shadow(0 0 8px #ff0055);" />
-          <path d="M 52,92 L 128,92 L 118,180 L 62,180 Z" fill="#12131a" stroke="#333" stroke-width="2" />
-          <circle cx="90" cy="120" r="12" fill="#2d3748" stroke="#ff0055" stroke-width="1.5" />
-          <circle cx="50" cy="130" r="14" fill="none" stroke="#666" stroke-width="3" />
-          <line x1="50" y1="35" x2="50" y2="215" stroke="#ff1744" stroke-width="6" stroke-linecap="round" style="filter: drop-shadow(0 0 10px #ff1744) drop-shadow(0 0 20px #ff0055);" />
-          <line x1="50" y1="35" x2="50" y2="215" stroke="#ffffff" stroke-width="2" stroke-linecap="round" />
+        <svg viewBox="0 0 190 230" class="enemy-svg">
+          <defs>
+            <linearGradient id="inq-armor" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2c323f" />
+              <stop offset="50%" stop-color="#181b22" />
+              <stop offset="100%" stop-color="#0a0c10" />
+            </linearGradient>
+            <filter id="inq-saber-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- Sith Cape with Deep Crimson Inner Satin Lining -->
+          <path d="M 40,85 L 14,215 Q 95,230 176,215 L 150,85 Z" fill="#0d0f14" />
+          <path d="M 45,95 L 32,210 L 65,215 Z" fill="#88081c" opacity="0.9" />
+          <path d="M 145,95 L 158,210 L 125,215 Z" fill="#88081c" opacity="0.9" />
+
+          <!-- Armored Pauldrons with Red Edge Piping -->
+          <polygon points="36,92 68,82 72,118 32,114" fill="url(#inq-armor)" stroke="#ff2a4b" stroke-width="1.5" />
+          <polygon points="154,92 122,82 118,118 158,114" fill="url(#inq-armor)" stroke="#ff2a4b" stroke-width="1.5" />
+
+          <!-- Inquisitor Armored Helmet -->
+          <path d="M 64,48 C 64,24 126,24 126,48 L 132,92 L 95,104 L 58,92 Z" fill="url(#inq-armor)" stroke="#ff2a4b" stroke-width="1.5" />
+          <!-- Sinister Angular Brow -->
+          <path d="M 68,54 L 95,66 L 122,54" stroke="#3e4759" stroke-width="3" fill="none" />
+
+          <!-- Glowing Crimson Visor Slit -->
+          <polygon points="68,64 95,73 122,64 122,70 95,78 68,70" fill="#ff0044" style="filter: drop-shadow(0 0 10px #ff0044) drop-shadow(0 0 18px #ff0044);" />
+          <line x1="72" y1="67" x2="118" y2="67" stroke="#ffffff" stroke-width="1.5" />
+
+          <!-- Sharp Mouth Grille / Respirator Plate -->
+          <polygon points="86,84 104,84 95,96" fill="#111" stroke="#ff2a4b" stroke-width="1" />
+
+          <!-- Armored Torso with Red Rank Lights -->
+          <path d="M 62,106 L 128,106 L 120,172 L 70,172 Z" fill="url(#inq-armor)" stroke="#333b47" stroke-width="2" />
+          <!-- Imperial Crimson Rank Insignia -->
+          <rect x="80" y="122" width="30" height="8" rx="2" fill="#1a1e27" stroke="#444" stroke-width="1" />
+          <rect x="83" y="124" width="7" height="4" fill="#ff2a4b" style="filter: drop-shadow(0 0 5px #ff2a4b);" />
+          <rect x="92" y="124" width="7" height="4" fill="#ff2a4b" style="filter: drop-shadow(0 0 5px #ff2a4b);" />
+          <rect x="101" y="124" width="7" height="4" fill="#ff2a4b" style="filter: drop-shadow(0 0 5px #ff2a4b);" />
+
+          <!-- Armored Greaves / Boots -->
+          <rect x="68" y="172" width="22" height="48" rx="4" fill="#12151c" />
+          <rect x="100" y="172" width="22" height="48" rx="4" fill="#12151c" />
+
+          <!-- DOUBLE-BLADED SPINNING INQUISITOR LIGHTSABER -->
+          <g transform="translate(38, 120)">
+            <!-- Circular Handguard Ring Hilt -->
+            <circle cx="0" cy="0" r="16" fill="none" stroke="#717c8d" stroke-width="3.5" />
+            <circle cx="0" cy="0" r="16" fill="none" stroke="#ff2a4b" stroke-width="1" />
+            <rect x="-4" y="-12" width="8" height="24" rx="2" fill="#1f232b" stroke="#717c8d" stroke-width="1" />
+            
+            <!-- UPPER RED BLADE -->
+            <line x1="0" y1="-16" x2="0" y2="-115" stroke="#ff0044" stroke-width="9" stroke-linecap="round" style="filter: url(#inq-saber-glow) drop-shadow(0 0 14px #ff0044) drop-shadow(0 0 24px #ff0044);" />
+            <line x1="0" y1="-16" x2="0" y2="-115" stroke="#ff4d6d" stroke-width="5" stroke-linecap="round" />
+            <line x1="0" y1="-16" x2="0" y2="-115" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+
+            <!-- LOWER RED BLADE -->
+            <line x1="0" y1="16" x2="0" y2="105" stroke="#ff0044" stroke-width="9" stroke-linecap="round" style="filter: url(#inq-saber-glow) drop-shadow(0 0 14px #ff0044) drop-shadow(0 0 24px #ff0044);" />
+            <line x1="0" y1="16" x2="0" y2="105" stroke="#ff4d6d" stroke-width="5" stroke-linecap="round" />
+            <line x1="0" y1="16" x2="0" y2="105" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+          </g>
         </svg>
       `;
     } else {
+      // DARTH VADER (Lord Vader)
       svgContent = `
-        <svg viewBox="0 0 180 220" class="enemy-svg">
-          <path d="M 60,60 Q 90,24 120,60 L 128,95 L 52,95 Z" fill="#0f1115" stroke="#3b4252" stroke-width="2" />
-          <path d="M 50,85 Q 90,75 130,85" stroke="#2e3440" stroke-width="4" fill="none" />
-          <polygon points="80,88 100,88 90,102" fill="#2e3440" stroke="#4c566a" stroke-width="1.5" />
-          <path d="M 50,105 L 130,105 L 125,190 L 55,190 Z" fill="#0a0c10" stroke="#2e3440" stroke-width="2" />
-          <rect x="74" y="125" width="32" height="26" fill="#1b1e2b" stroke="#4c566a" stroke-width="1.5" rx="2" />
-          <rect x="78" y="130" width="8" height="6" fill="#ff2a4b" />
-          <rect x="90" y="130" width="8" height="6" fill="#00d0ff" />
-          <rect x="78" y="140" width="20" height="4" fill="#ffffff" />
-          <rect x="42" y="115" width="8" height="26" fill="#444" rx="2" />
-          <line x1="46" y1="115" x2="25" y2="20" stroke="#ff0033" stroke-width="6.5" stroke-linecap="round" style="filter: drop-shadow(0 0 12px #ff0033) drop-shadow(0 0 24px #ff0000);" />
-          <line x1="46" y1="115" x2="25" y2="20" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" />
+        <svg viewBox="0 0 190 230" class="enemy-svg">
+          <defs>
+            <linearGradient id="vader-helmet" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#2a2e39" />
+              <stop offset="45%" stop-color="#14171f" />
+              <stop offset="100%" stop-color="#050608" />
+            </linearGradient>
+            <linearGradient id="vader-cape" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#1c1f26" />
+              <stop offset="60%" stop-color="#0c0e12" />
+              <stop offset="100%" stop-color="#020305" />
+            </linearGradient>
+            <filter id="vader-saber-glow" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur1" />
+              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur2" />
+              <feMerge>
+                <feMergeNode in="blur2" />
+                <feMergeNode in="blur1" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          <!-- Massive Billowing Sith Lord Cape -->
+          <path d="M 40,78 L 10,224 Q 95,235 180,224 L 150,78 Z" fill="url(#vader-cape)" />
+          <path d="M 45,85 L 26,220 L 60,224 Z" fill="#000000" opacity="0.6" />
+          <path d="M 145,85 L 164,220 L 130,224 Z" fill="#000000" opacity="0.6" />
+
+          <!-- Flared Obsidian Helmet Dome -->
+          <path d="M 54,58 C 54,20 136,20 136,58 L 144,90 Q 95,98 46,90 Z" fill="url(#vader-helmet)" stroke="#3a4050" stroke-width="1.8" />
+          <!-- Helmet Top Specular Reflection Arc -->
+          <path d="M 68,40 Q 95,26 122,40" stroke="#6b778d" stroke-width="2.5" fill="none" opacity="0.8" />
+          <line x1="95" y1="28" x2="95" y2="60" stroke="#4a5366" stroke-width="2" />
+
+          <!-- Menacing Eye Lenses with Dark Ruby Glint -->
+          <path d="M 64,68 Q 78,64 88,72 Q 78,80 64,76 Z" fill="#0a0c10" stroke="#222" stroke-width="1" />
+          <circle cx="76" cy="71" r="2" fill="#ff1744" opacity="0.75" style="filter: drop-shadow(0 0 4px #ff1744);" />
+
+          <path d="M 126,68 Q 112,64 102,72 Q 112,80 126,76 Z" fill="#0a0c10" stroke="#222" stroke-width="1" />
+          <circle cx="114" cy="71" r="2" fill="#ff1744" opacity="0.75" style="filter: drop-shadow(0 0 4px #ff1744);" />
+
+          <!-- Triangular Lower Respirator Grille with Slats -->
+          <polygon points="82,78 108,78 95,99" fill="#14171f" stroke="#525d73" stroke-width="1.5" />
+          <line x1="86" y1="84" x2="104" y2="84" stroke="#333" stroke-width="1.5" />
+          <line x1="89" y1="89" x2="101" y2="89" stroke="#333" stroke-width="1.5" />
+          <line x1="92" y1="94" x2="98" y2="94" stroke="#333" stroke-width="1.5" />
+          <!-- Atmospheric Chin Tusks -->
+          <circle cx="82" cy="98" r="3" fill="#cbd5e1" stroke="#333" stroke-width="1" />
+          <circle cx="108" cy="98" r="3" fill="#cbd5e1" stroke="#333" stroke-width="1" />
+
+          <!-- Shoulder Armor with Alternating Black and Silver Ribs -->
+          <path d="M 46,94 L 144,94 L 138,125 L 52,125 Z" fill="#11141a" stroke="#2e3544" stroke-width="1.5" />
+          <line x1="62" y1="94" x2="65" y2="125" stroke="#717c8d" stroke-width="2" />
+          <line x1="76" y1="94" x2="78" y2="125" stroke="#717c8d" stroke-width="2" />
+          <line x1="114" y1="94" x2="112" y2="125" stroke="#717c8d" stroke-width="2" />
+          <line x1="128" y1="94" x2="125" y2="125" stroke="#717c8d" stroke-width="2" />
+
+          <!-- Chest Life Support Box -->
+          <rect x="74" y="128" width="42" height="32" rx="3" fill="#161922" stroke="#64748b" stroke-width="2" />
+          <!-- Indicator Rocker Switches -->
+          <rect x="78" y="133" width="9" height="7" rx="1.5" fill="#ff2a4b" style="filter: drop-shadow(0 0 5px #ff2a4b);" />
+          <rect x="91" y="133" width="9" height="7" rx="1.5" fill="#25f252" style="filter: drop-shadow(0 0 5px #25f252);" />
+          <rect x="103" y="133" width="9" height="7" rx="1.5" fill="#00d0ff" style="filter: drop-shadow(0 0 5px #00d0ff);" />
+          <!-- Status display slot bars -->
+          <rect x="79" y="145" width="32" height="4" fill="#ffffff" opacity="0.9" />
+          <rect x="79" y="152" width="14" height="3" fill="#ff2a4b" />
+          <rect x="97" y="152" width="14" height="3" fill="#25f252" />
+
+          <!-- Combat Belt with Utility Boxes -->
+          <rect x="56" y="165" width="78" height="15" fill="#0b0d12" stroke="#222" stroke-width="1" />
+          <rect x="86" y="163" width="18" height="19" rx="2" fill="#94a3b8" stroke="#333" stroke-width="1" />
+          <rect x="62" y="166" width="14" height="13" rx="2" fill="#1f242e" stroke="#64748b" stroke-width="1" />
+          <circle cx="69" cy="172.5" r="2" fill="#25f252" />
+          <rect x="114" y="166" width="14" height="13" rx="2" fill="#1f242e" stroke="#64748b" stroke-width="1" />
+          <circle cx="121" cy="172.5" r="2" fill="#ff2a4b" />
+
+          <!-- Armored Boots -->
+          <rect x="65" y="180" width="26" height="44" rx="4" fill="#090b0e" stroke="#222" stroke-width="1" />
+          <rect x="99" y="180" width="26" height="44" rx="4" fill="#090b0e" stroke="#222" stroke-width="1" />
+
+          <!-- DARTH VADER'S ICONIC LIGHTSABER -->
+          <g transform="translate(34, 125) rotate(15)">
+            <!-- Hilt -->
+            <rect x="0" y="0" width="10" height="36" rx="2" fill="#94a3b8" stroke="#111" stroke-width="1" />
+            <!-- Black Rubber Grips -->
+            <line x1="0" y1="14" x2="10" y2="14" stroke="#111" stroke-width="2" />
+            <line x1="0" y1="19" x2="10" y2="19" stroke="#111" stroke-width="2" />
+            <line x1="0" y1="24" x2="10" y2="24" stroke="#111" stroke-width="2" />
+            <line x1="0" y1="29" x2="10" y2="29" stroke="#111" stroke-width="2" />
+            <!-- Emitter Shroud -->
+            <polygon points="-2,0 12,0 9,-8 1,-8" fill="#1e222b" stroke="#475569" stroke-width="1" />
+
+            <!-- BRILLIANT SITH RED LIGHTSABER BLADE -->
+            <line x1="5" y1="-8" x2="5" y2="-120" stroke="#ff002a" stroke-width="11" stroke-linecap="round" style="filter: url(#vader-saber-glow) drop-shadow(0 0 16px #ff002a) drop-shadow(0 0 32px #ff0000);" />
+            <line x1="5" y1="-8" x2="5" y2="-120" stroke="#ff385c" stroke-width="6.5" stroke-linecap="round" />
+            <line x1="5" y1="-8" x2="5" y2="-120" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+          </g>
         </svg>
       `;
     }
