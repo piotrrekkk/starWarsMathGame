@@ -1,5 +1,5 @@
 // Jedi Math Game - Service Worker for PWA Offline Support
-const CACHE_NAME = 'jedi-math-pwa-v1.2.0';
+const CACHE_NAME = 'jedi-math-pwa-v1.3.1';
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -8,8 +8,10 @@ const ASSETS_TO_CACHE = [
   '/manifest.json',
   '/js/audio.js',
   '/js/data.js',
+  '/js/maze-data.js',
   '/js/math-engine.js',
   '/js/visual-fx.js',
+  '/js/maze-game.js',
   '/js/game.js',
   '/icons/icon.svg',
   '/icons/icon-192.png',

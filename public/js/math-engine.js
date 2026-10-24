@@ -1,4 +1,8 @@
-// Math Engine for Jedi Academy: 0 to 99 range, (+, -, ×, :)
+// Math Engine for Jedi Academy: 
+// Requirements:
+// - Dodawanie / odejmowanie: od 0 do 100, dowolne składniki, odjemna i odjemnik (wyniki 0..100)
+// - Mnożenie: mnożniki od 0 do 11 (wyniki 0..121)
+// - Dzielenie: dzielna do 100, dzielnik do 11 (dzielenie bez reszty)
 
 class MathEngine {
   constructor() {
@@ -18,65 +22,55 @@ class MathEngine {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
-  // Generate a valid question in 0..99
-  generateQuestion() {
+  // Generate a valid question based on updated curriculum specifications
+  generateQuestion(optionsCount = 4) {
     const op = this.getNextOperation();
     let num1, num2, answer, symbol;
+    let maxDistractorBound = 100;
 
     switch (op) {
       case '+': {
         symbol = '+';
-        // a + b <= 99
-        num1 = this.randomInt(0, 99);
-        num2 = this.randomInt(0, 99 - num1);
+        // Dodawanie: 0 do 100, dowolne składniki, suma <= 100
+        num1 = this.randomInt(0, 100);
+        num2 = this.randomInt(0, 100 - num1);
         answer = num1 + num2;
+        maxDistractorBound = 100;
         break;
       }
       case '-': {
         symbol = '-';
-        // a - b >= 0, a <= 99
-        num1 = this.randomInt(0, 99);
+        // Odejmowanie: 0 do 100, dowolna odjemna i odjemnik >= 0
+        num1 = this.randomInt(0, 100);
         num2 = this.randomInt(0, num1);
         answer = num1 - num2;
+        maxDistractorBound = 100;
         break;
       }
       case '*': {
         symbol = '×';
-        // Multiplication in range 0..99
-        // 9-year-olds: standard times tables (0-10 or 0-12) and friendly multiples
-        const poolType = Math.random();
-        if (poolType < 0.65) {
-          // Standard times table: 2..10 * 2..10 (or 0, 1)
-          num1 = this.randomInt(2, 10);
-          num2 = this.randomInt(2, Math.floor(99 / num1));
-        } else if (poolType < 0.85) {
-          // 0, 1 or 11, 12 tables
-          num1 = this.randomInt(0, 12);
-          num2 = this.randomInt(0, Math.floor(99 / Math.max(num1, 1)));
-        } else {
-          // Round multiples like 10 * X, 20 * X
-          const bases = [10, 20, 25, 30, 40, 50];
-          num1 = bases[Math.floor(Math.random() * bases.length)];
-          const maxMult = Math.floor(99 / num1);
-          num2 = this.randomInt(1, Math.max(1, maxMult));
-        }
+        // Mnożenie: mnożniki od 0 do 11
+        num1 = this.randomInt(0, 11);
+        num2 = this.randomInt(0, 11);
         answer = num1 * num2;
+        maxDistractorBound = Math.max(121, answer + 10);
         break;
       }
       case '/': {
         symbol = ':';
-        // Division without remainder, result and dividend in 0..99
-        // divisor b >= 1, answer c in 0..12 or clean divisor
-        const divisor = this.randomInt(1, 10);
-        const quotient = this.randomInt(1, Math.floor(99 / divisor));
-        num1 = divisor * quotient; // dividend <= 99
-        num2 = divisor;
+        // Dzielenie: dzielna do 100, dzielnik do 11 (bez reszty)
+        const divisor = this.randomInt(1, 11);
+        const maxQuotient = Math.floor(100 / divisor);
+        const quotient = this.randomInt(0, maxQuotient);
+        num1 = divisor * quotient; // Dzielna <= 100
+        num2 = divisor;            // Dzielnik <= 11
         answer = quotient;
+        maxDistractorBound = 100;
         break;
       }
     }
 
-    const options = this.generateOptions(answer, num1, num2, symbol);
+    const options = this.generateOptions(answer, num1, num2, symbol, optionsCount, maxDistractorBound);
 
     return {
       num1,
@@ -89,43 +83,48 @@ class MathEngine {
     };
   }
 
-  // Generate 5 options (1 correct + 4 smart distractors) clamped to 0..99
-  generateOptions(correctAnswer, num1, num2, symbol) {
+  // Generate smart options (1 correct + distractors)
+  generateOptions(correctAnswer, num1, num2, symbol, count = 4, maxBound = 100) {
     const choices = new Set();
     choices.add(correctAnswer);
 
-    // Potential smart distractor generators:
     const candidates = [];
 
     // Off by 1
-    if (correctAnswer + 1 <= 99) candidates.push(correctAnswer + 1);
+    if (correctAnswer + 1 <= maxBound) candidates.push(correctAnswer + 1);
     if (correctAnswer - 1 >= 0) candidates.push(correctAnswer - 1);
 
     // Off by 10
-    if (correctAnswer + 10 <= 99) candidates.push(correctAnswer + 10);
+    if (correctAnswer + 10 <= maxBound) candidates.push(correctAnswer + 10);
     if (correctAnswer - 10 >= 0) candidates.push(correctAnswer - 10);
 
     // Off by 2
-    if (correctAnswer + 2 <= 99) candidates.push(correctAnswer + 2);
+    if (correctAnswer + 2 <= maxBound) candidates.push(correctAnswer + 2);
     if (correctAnswer - 2 >= 0) candidates.push(correctAnswer - 2);
 
-    // Operation slips:
-    if (symbol === '×' && (num1 + num2) <= 99 && (num1 + num2) !== correctAnswer) {
+    // Common arithmetic slips:
+    if (symbol === '×' && (num1 + num2) <= maxBound && (num1 + num2) !== correctAnswer) {
       candidates.push(num1 + num2); // added instead of multiplied
     }
-    if (symbol === '+' && Math.abs(num1 - num2) <= 99) {
+    if (symbol === '+' && Math.abs(num1 - num2) <= maxBound) {
       candidates.push(Math.abs(num1 - num2));
     }
-    if (symbol === ':' && (num1 - num2) >= 0 && (num1 - num2) <= 99) {
+    if (symbol === ':' && (num1 - num2) >= 0 && (num1 - num2) <= maxBound) {
       candidates.push(num1 - num2);
+    }
+    if (symbol === '×' && num1 > 0 && (num1 * (num2 + 1)) <= maxBound) {
+      candidates.push(num1 * (num2 + 1));
+    }
+    if (symbol === '×' && num2 > 1 && (num1 * (num2 - 1)) <= maxBound) {
+      candidates.push(num1 * (num2 - 1));
     }
 
     // Inverted digits: e.g. 42 -> 24
-    if (correctAnswer >= 10 && correctAnswer <= 99) {
+    if (correctAnswer >= 10 && correctAnswer <= maxBound) {
       const tens = Math.floor(correctAnswer / 10);
       const units = correctAnswer % 10;
       const inverted = units * 10 + tens;
-      if (inverted <= 99 && inverted !== correctAnswer) {
+      if (inverted <= maxBound && inverted !== correctAnswer) {
         candidates.push(inverted);
       }
     }
@@ -134,26 +133,26 @@ class MathEngine {
     this.shuffle(candidates);
 
     for (const c of candidates) {
-      if (choices.size >= 5) break;
-      if (c >= 0 && c <= 99 && !choices.has(c)) {
+      if (choices.size >= count) break;
+      if (c >= 0 && c <= maxBound && !choices.has(c)) {
         choices.add(c);
       }
     }
 
-    // If still less than 5, generate nearby plausible numbers
+    // If still less than count, generate nearby plausible numbers
     let attempts = 0;
-    while (choices.size < 5 && attempts < 50) {
+    while (choices.size < count && attempts < 60) {
       attempts++;
       const offset = this.randomInt(-8, 8);
       const val = correctAnswer + offset;
-      if (val >= 0 && val <= 99 && !choices.has(val)) {
+      if (val >= 0 && val <= maxBound && !choices.has(val)) {
         choices.add(val);
       }
     }
 
     // Safety fallback
-    while (choices.size < 5) {
-      const fallback = this.randomInt(0, 99);
+    while (choices.size < count) {
+      const fallback = this.randomInt(0, maxBound);
       choices.add(fallback);
     }
 

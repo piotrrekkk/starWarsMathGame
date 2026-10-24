@@ -21,7 +21,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1.1.0">
+  <link rel="stylesheet" href="styles.css?v=1.3.1">
 </head>
 <body>
   <!-- Background Deep Space & Nebula -->
@@ -61,11 +61,11 @@
         </div>
 
         <div class="start-actions">
-          <button id="btn-start-game" class="btn-primary btn-pulse">
-            <span class="btn-icon">⚡</span> WSTĄP DO AKADEMII JEDI
+          <button id="btn-start-saga" class="btn-primary btn-pulse btn-saga">
+            <span class="btn-icon">🎮</span> Labirynt
           </button>
-          <button id="btn-how-to-play" class="btn-secondary">
-            📖 Jak grać? (Zasady)
+          <button id="btn-start-game" class="btn-secondary">
+            <span class="btn-icon">⚔️</span> Gra turowa
           </button>
         </div>
       </div>
@@ -74,13 +74,30 @@
     <!-- SCREEN 2: GALAXY MAP / LEVEL SELECT -->
     <main id="screen-level-select" class="screen hidden">
       <div class="section-header">
+        <button id="btn-back-to-main" class="btn-util">&larr; Zmień Miecz / Menu Główne</button>
         <div class="section-title-wrap">
           <h2 class="section-title">🗺️ MAPA GALAKTYCZNA - WYBÓR MISJI</h2>
-          <p class="section-subtitle">Pokonaj 10 żyć wroga w każdej potyczce. Uważaj na swoje 5 żyć!</p>
+          <p class="section-subtitle">Wybierz misję z sagi Star Wars lub pojedynki aren!</p>
         </div>
       </div>
 
-      <div id="levels-grid" class="levels-container">
+      <!-- Mode Switcher Tabs -->
+      <div class="mode-tabs-container">
+        <button id="tab-saga-mode" class="mode-tab-btn active">
+          <span>🎮</span> SAGA JEDI: LABIRYNTY (Epizody I - VI)
+        </button>
+        <button id="tab-arena-mode" class="mode-tab-btn">
+          <span>⚔️</span> ARENA POJEDYNKÓW (Turowa)
+        </button>
+      </div>
+
+      <!-- Tab 1: Saga Episodes Container -->
+      <div id="saga-grid" class="levels-container">
+        <!-- Rendered by game.js -->
+      </div>
+
+      <!-- Tab 2: Classic Arena Container -->
+      <div id="levels-grid" class="levels-container hidden">
         <!-- Rendered by game.js -->
       </div>
     </main>
@@ -237,6 +254,40 @@
           </div>
 
           <div class="rule-block">
+            <div class="rule-icon">🎮</div>
+            <div>
+              <strong>Sterowanie: GameSir G8 Plus / Kontroler Pad</strong>
+              <p>
+                <strong>Lewy analog / D-Pad:</strong> Płynny ruch Jedi po labiryncie.<br>
+                <strong>Przycisk [A]:</strong> Atak mieczem świetlnym / Interakcja z terminalem.<br>
+                <strong>Przyciski [A], [B], [X], [Y]:</strong> Błyskawiczny wybór odpowiedzi w zagadkach!
+              </p>
+            </div>
+          </div>
+
+          <div class="rule-block">
+            <div class="rule-icon">⌨️</div>
+            <div>
+              <strong>Sterowanie: Klawiatura PC</strong>
+              <p>
+                <strong>WSAD lub Strzałki:</strong> Poruszanie się postaci.<br>
+                <strong>Spacja / E / Enter:</strong> Cięcie mieczem i otwieranie śluz.<br>
+                <strong>Klawisze 1, 2, 3, 4:</strong> Wybór wariantu odpowiedzi w zagadce.
+              </p>
+            </div>
+          </div>
+
+          <div class="rule-block">
+            <div class="rule-icon">📱</div>
+            <div>
+              <strong>Sterowanie: Ekran Dotykowy (Telefon / Tablet)</strong>
+              <p>
+                Gdy nie masz pada, na ekranie pojawia się <strong>półprzezroczysty joystick</strong> po lewej stronie oraz przyciski <strong>[⚔️ ATAK]</strong> i <strong>[⚡ AKCJA]</strong> po prawej stronie!
+              </p>
+            </div>
+          </div>
+
+          <div class="rule-block">
             <div class="rule-icon">📲</div>
             <div>
               <strong>Zainstaluj jako aplikację (PWA)</strong>
@@ -334,14 +385,105 @@
       </div>
     </div>
 
+    <!-- SCREEN 4: INTERACTIVE JEDI MAZE (STAR WARS SAGA I - VI) -->
+    <main id="screen-maze" class="screen hidden">
+      <!-- Maze HUD Navigation -->
+      <div class="maze-header-hud">
+        <button id="btn-maze-back" class="btn-util">&larr; Misje Sagi</button>
+        <div class="maze-meta">
+          <div id="maze-hud-episode" class="maze-title-badge">EPIZOD I: Mroczne Widmo</div>
+          <div id="maze-hud-mission" class="maze-subtitle-badge">📍 Ucieczka z Flagowca</div>
+        </div>
+        <div class="maze-stats-badges">
+          <div class="maze-hp-box">
+            <span class="hp-label">ŻYCIA:</span>
+            <div id="maze-hud-hearts" class="maze-hearts-wrap"></div>
+          </div>
+          <div class="maze-stat-pill">⭐ <span id="maze-hud-score">0</span></div>
+          <div class="maze-stat-pill">💎 <span id="maze-hud-crystals">0</span></div>
+          <div id="maze-hud-gamepad" class="maze-gamepad-badge">🎮 Klawiatura / Dotyk</div>
+        </div>
+      </div>
+
+      <!-- Maze Canvas Container -->
+      <div class="maze-viewport">
+        <canvas id="maze-canvas"></canvas>
+        <div id="maze-interaction-prompt" class="maze-prompt-bubble hidden">⚡ Wciśnij [A] lub [E] aby otworzyć</div>
+
+        <!-- Translucent On-Screen Touch Controls (Active on Mobile / Tablets) -->
+        <div id="maze-touch-controls" class="maze-touch-overlay">
+          <!-- Left: Virtual Joystick -->
+          <div id="touch-joystick-zone" class="touch-joystick-base">
+            <div id="touch-joystick-knob" class="touch-joystick-stick"></div>
+          </div>
+          <!-- Right: Action Buttons Cluster -->
+          <div class="touch-actions-cluster">
+            <button id="touch-btn-action" class="touch-btn btn-touch-action" title="Interakcja / Śluza">⚡ AKCJA</button>
+            <button id="touch-btn-attack" class="touch-btn btn-touch-attack" title="Atak Mieczem">⚔️ ATAK</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- HOLOGRAPHIC PUZZLE MODAL (SECURITY TERMINAL) -->
+    <div id="maze-puzzle-modal" class="modal-overlay hidden">
+      <div class="modal-card puzzle-terminal-card">
+        <div class="terminal-hologram-scanline"></div>
+        <div class="puzzle-header">
+          <span class="terminal-icon">📟</span>
+          <h3 id="maze-puzzle-lore" class="puzzle-title">ŚLUZA BEZPIECZEŃSTWA - SYSTEM JEDI</h3>
+        </div>
+        <div id="maze-puzzle-question" class="puzzle-question-text">
+          Wprowadź kod dekodujący:<br><span class="puzzle-math-formula">48 + 37 = ?</span>
+        </div>
+        <p id="maze-puzzle-feedback" class="puzzle-feedback-hint">
+          Wybierz odpowiedź przyciskiem GameSir [A][B][X][Y], klawiaturą [1-4] lub dotknij ekranu:
+        </p>
+        <div id="maze-puzzle-choices" class="puzzle-choices-grid">
+          <!-- Rendered dynamically by maze-game.js with [A], [B], [X], [Y] badges -->
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: MAZE VICTORY -->
+    <div id="maze-modal-victory" class="modal-overlay hidden">
+      <div class="modal-card victory-card">
+        <div class="victory-icon">🏆</div>
+        <h2 id="maze-victory-title" class="modal-title victory-title">MISJA EPIZODU UKOŃCZONA!</h2>
+        <p id="maze-victory-lore" class="victory-sub">Ocaliłeś Galaktykę potęgą wiedzy i Mocy!</p>
+        <div class="victory-score-pill">
+          <span>Zdobyte Punkty:</span>
+          <strong id="maze-victory-score">1850</strong>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-maze-replay" class="btn-secondary">Zagraj Ponownie 🔄</button>
+          <button id="btn-maze-next-episode" class="btn-primary btn-pulse">Następny Epizod &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: MAZE GAME OVER -->
+    <div id="maze-modal-gameover" class="modal-overlay hidden">
+      <div class="modal-card defeat-card">
+        <div class="defeat-icon">⚡</div>
+        <h2 class="modal-title defeat-title">MOC WYMAGA SKUPIENIA</h2>
+        <p id="maze-gameover-lore" class="defeat-sub">Porażka to tylko kolejny krok w nauce Jedi.</p>
+        <div class="modal-footer">
+          <button id="btn-maze-retry" class="btn-primary">Spróbuj Ponownie 🔄</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <!-- Scripts -->
-  <script src="js/pwa.js?v=1.1.0"></script>
-  <script src="js/audio.js?v=1.1.0"></script>
-  <script src="js/data.js?v=1.1.0"></script>
-  <script src="js/math-engine.js?v=1.1.0"></script>
-  <script src="js/visual-fx.js?v=1.1.0"></script>
-  <script src="js/game.js?v=1.1.0"></script>
+  <script src="js/pwa.js?v=1.3.1"></script>
+  <script src="js/audio.js?v=1.3.1"></script>
+  <script src="js/data.js?v=1.3.1"></script>
+  <script src="js/maze-data.js?v=1.3.1"></script>
+  <script src="js/math-engine.js?v=1.3.1"></script>
+  <script src="js/visual-fx.js?v=1.3.1"></script>
+  <script src="js/maze-game.js?v=1.3.1"></script>
+  <script src="js/game.js?v=1.3.1"></script>
 </body>
 </html>

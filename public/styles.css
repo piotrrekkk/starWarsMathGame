@@ -369,6 +369,16 @@ body {
 .section-header {
   margin-bottom: 20px;
   text-align: center;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+#btn-back-to-main {
+  align-self: flex-start;
+  margin-bottom: 4px;
 }
 
 .section-title {
@@ -1360,5 +1370,509 @@ body {
 
   .math-formula {
     font-size: 1.6rem;
+  }
+}
+
+/* ==========================================================================
+   JEDI ADVENTURE: SAGA LABIRYNTÓW (EPIZODY I - VI) & GAMEPAD / TOUCH CSS
+   ========================================================================== */
+
+/* Mode Tabs in Level Select */
+.mode-tabs-container {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mode-tab-btn {
+  background: rgba(17, 23, 40, 0.85);
+  border: 2px solid var(--bg-card-border);
+  color: var(--text-muted);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-tab-btn:hover {
+  border-color: var(--jedi-blue);
+  color: var(--text-main);
+}
+
+.mode-tab-btn.active {
+  background: rgba(0, 208, 255, 0.15);
+  border-color: var(--jedi-blue);
+  color: var(--jedi-blue);
+  box-shadow: 0 0 20px rgba(0, 208, 255, 0.3);
+}
+
+.btn-saga {
+  background: linear-gradient(135deg, #00d0ff 0%, #0077b6 100%) !important;
+  box-shadow: 0 0 25px rgba(0, 208, 255, 0.6) !important;
+  color: #000 !important;
+  font-weight: 900 !important;
+}
+
+/* Saga Episode Cards */
+.saga-badge-pill {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(255, 234, 41, 0.15);
+  color: var(--kyber-gold);
+  border: 1px solid var(--kyber-gold);
+  margin-bottom: 8px;
+}
+
+.saga-feature-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.feature-tag {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+}
+
+/* SCREEN 4: MAZE VIEWPORT & HUD */
+#screen-maze {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 80px);
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.maze-header-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(17, 23, 40, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius-md);
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.maze-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.maze-title-badge {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--jedi-blue);
+  letter-spacing: 0.5px;
+}
+
+.maze-subtitle-badge {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.maze-stats-badges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.maze-hp-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.maze-hp-box .hp-label {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.maze-hearts-wrap {
+  display: flex;
+  gap: 3px;
+  font-size: 1.2rem;
+}
+
+.maze-stat-pill {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.maze-gamepad-badge {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #334466;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  font-family: var(--font-display);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+}
+
+.maze-gamepad-badge.connected {
+  border-color: #25f252;
+  color: #25f252;
+  box-shadow: 0 0 12px rgba(37, 242, 82, 0.4);
+}
+
+.pad-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.pad-status.on {
+  background: #25f252;
+  box-shadow: 0 0 8px #25f252;
+}
+
+.pad-status.off {
+  background: #ff2a4b;
+}
+
+/* Maze Viewport & Canvas */
+.maze-viewport {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 480px;
+  height: 65vh;
+  background: #060a14;
+  border: 2px solid #223055;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 60px rgba(0, 0, 0, 0.8);
+}
+
+#maze-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Floating interaction prompt */
+.maze-prompt-bubble {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(17, 23, 40, 0.92);
+  border: 2px solid var(--jedi-blue);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  box-shadow: 0 0 25px rgba(0, 208, 255, 0.5);
+  animation: promptPulse 1.5s infinite alternate;
+  pointer-events: none;
+  z-index: 20;
+}
+
+@keyframes promptPulse {
+  0% { transform: translateX(-50%) scale(0.96); opacity: 0.85; }
+  100% { transform: translateX(-50%) scale(1.04); opacity: 1; }
+}
+
+/* Translucent Touch Controls Overlay */
+.maze-touch-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none; /* Let touches through to viewport except on control elements */
+  z-index: 30;
+}
+
+/* Virtual Joystick */
+.touch-joystick-base {
+  position: absolute;
+  bottom: 25px;
+  left: 25px;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: rgba(0, 208, 255, 0.12);
+  border: 2px solid rgba(0, 208, 255, 0.4);
+  backdrop-filter: blur(4px);
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.touch-joystick-stick {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #00d0ff 0%, rgba(0, 119, 182, 0.8) 100%);
+  box-shadow: 0 0 15px rgba(0, 208, 255, 0.7);
+  border: 2px solid #ffffff;
+  pointer-events: none;
+  transition: transform 0.05s ease-out;
+}
+
+/* Action Buttons Cluster */
+.touch-actions-cluster {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+  display: flex;
+  gap: 16px;
+  pointer-events: auto;
+}
+
+.touch-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 900;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  backdrop-filter: blur(6px);
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+
+.touch-btn:active {
+  transform: scale(0.92);
+}
+
+.btn-touch-attack {
+  background: rgba(255, 42, 75, 0.25);
+  border: 2px solid rgba(255, 42, 75, 0.8);
+  color: #fff;
+  box-shadow: 0 0 18px rgba(255, 42, 75, 0.4);
+}
+
+.btn-touch-action {
+  background: rgba(37, 242, 82, 0.25);
+  border: 2px solid rgba(37, 242, 82, 0.8);
+  color: #fff;
+  box-shadow: 0 0 18px rgba(37, 242, 82, 0.4);
+}
+
+/* HOLOGRAPHIC PUZZLE MODAL */
+.puzzle-terminal-card {
+  max-width: 580px;
+  background: rgba(10, 15, 30, 0.95);
+  border: 2px solid var(--jedi-blue);
+  box-shadow: 0 0 45px rgba(0, 208, 255, 0.5), inset 0 0 30px rgba(0, 208, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.terminal-hologram-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, rgba(0, 208, 255, 0.8), transparent);
+  animation: scanlineAnim 3s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanlineAnim {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+.puzzle-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(0, 208, 255, 0.3);
+  padding-bottom: 10px;
+}
+
+.terminal-icon {
+  font-size: 1.6rem;
+}
+
+.puzzle-title {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--jedi-blue);
+  letter-spacing: 0.5px;
+}
+
+.puzzle-question-text {
+  font-size: 1.1rem;
+  color: var(--text-main);
+  text-align: center;
+  margin: 12px 0 16px;
+}
+
+.puzzle-math-formula {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--kyber-gold);
+  text-shadow: 0 0 20px rgba(255, 234, 41, 0.6);
+  margin-top: 8px;
+}
+
+.puzzle-feedback-hint {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.feedback-success {
+  color: #25f252;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.feedback-error {
+  color: #ff2a4b;
+  font-weight: 700;
+}
+
+.puzzle-choices-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.btn-puzzle-choice {
+  background: rgba(17, 23, 40, 0.9);
+  border: 2px solid #334466;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-main);
+}
+
+.btn-puzzle-choice:hover, .btn-puzzle-choice:active {
+  transform: translateY(-2px);
+  background: rgba(25, 35, 60, 0.95);
+  box-shadow: 0 0 20px rgba(0, 208, 255, 0.4);
+}
+
+.choice-badge {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 0.95rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+
+.choice-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+.victory-score-pill {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 234, 41, 0.3);
+  padding: 10px 20px;
+  border-radius: 12px;
+  margin: 16px 0 24px;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.victory-score-pill strong {
+  color: var(--kyber-gold);
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  .maze-viewport {
+    height: 55vh;
+    min-height: 380px;
+  }
+
+  .touch-joystick-base {
+    bottom: 15px;
+    left: 15px;
+    width: 95px;
+    height: 95px;
+  }
+
+  .touch-joystick-stick {
+    width: 42px;
+    height: 42px;
+  }
+
+  .touch-actions-cluster {
+    bottom: 15px;
+    right: 15px;
+    gap: 10px;
+  }
+
+  .touch-btn {
+    width: 62px;
+    height: 62px;
+    font-size: 0.75rem;
+  }
+
+  .puzzle-choices-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .puzzle-math-formula {
+    font-size: 2rem;
   }
 }

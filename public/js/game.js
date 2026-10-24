@@ -29,11 +29,15 @@ class JediMathGame {
     // Sound FX ref
     this.audio = window.soundFX;
 
+    window.jediGame = this;
+    window.gameInstance = this;
+
     this.initDOM();
   }
 
   initDOM() {
     // Buttons
+    this.btnStartSaga = document.getElementById('btn-start-saga');
     this.btnStart = document.getElementById('btn-start-game');
     this.btnHowToPlay = document.getElementById('btn-how-to-play');
     this.btnCloseModal = document.getElementById('btn-close-modal');
@@ -43,10 +47,18 @@ class JediMathGame {
     this.btnRetry = document.getElementById('btn-retry');
     this.btnToggleInputMode = document.getElementById('btn-toggle-input-mode');
 
+    // Tabs
+    this.tabSagaMode = document.getElementById('tab-saga-mode');
+    this.tabArenaMode = document.getElementById('tab-arena-mode');
+    this.sagaGrid = document.getElementById('saga-grid');
+    this.levelsGrid = document.getElementById('levels-grid');
+
     // Containers & screens
     this.screenStart = document.getElementById('screen-start');
     this.screenLevelSelect = document.getElementById('screen-level-select');
     this.screenBattle = document.getElementById('screen-battle');
+    this.screenMaze = document.getElementById('screen-maze');
+    this.btnBackToMain = document.getElementById('btn-back-to-main');
     this.modalHowTo = document.getElementById('modal-how-to');
     this.modalVictory = document.getElementById('modal-victory');
     this.modalDefeat = document.getElementById('modal-defeat');
@@ -71,54 +83,102 @@ class JediMathGame {
     this.elNumpadContainer = document.getElementById('numpad-container');
     this.elNumpadInput = document.getElementById('numpad-display-value');
 
-    // Bind event listeners
-    this.bindEvents();
+    // Maze Game Instance
+    if (window.JediMazeGame) {
+      this.mazeGame = new JediMazeGame(this.mathEngine, this.audio);
+      window.mazeGameInstance = this.mazeGame;
+    }
+
+    // Render UI initial state
     this.renderCrystals();
     this.renderLevelMap();
+    this.renderSagaMap();
     this.updateSoundButtonState();
+
+    // Bind event listeners
+    this.bindEvents();
   }
 
   bindEvents() {
-    this.btnStart.addEventListener('click', () => {
-      this.audio.playSaberIgnite();
-      this.showScreen('level-select');
-    });
-
-    this.btnHowToPlay.addEventListener('click', () => {
-      this.modalHowTo.classList.remove('hidden');
-    });
-
-    this.btnCloseModal.addEventListener('click', () => {
-      this.modalHowTo.classList.add('hidden');
-    });
-
-    this.btnSoundToggle.addEventListener('click', () => {
-      const isMuted = this.audio.toggleMute();
-      this.updateSoundButtonState();
-    });
-
-    this.btnBackToMenu.addEventListener('click', () => {
-      this.showScreen('level-select');
-    });
-
-    this.btnNextLevel.addEventListener('click', () => {
-      this.modalVictory.classList.add('hidden');
-      if (this.currentLevelIndex < GAME_DATA.levels.length - 1) {
-        this.startLevel(this.currentLevelIndex + 1);
-      } else {
+    if (this.btnStartSaga) {
+      this.btnStartSaga.addEventListener('click', () => {
+        this.audio.playSaberIgnite();
+        this.switchModeTab('saga');
         this.showScreen('level-select');
-      }
-    });
+      });
+    }
 
-    this.btnRetry.addEventListener('click', () => {
-      this.modalDefeat.classList.add('hidden');
-      this.startLevel(this.currentLevelIndex);
-    });
+    if (this.tabSagaMode) {
+      this.tabSagaMode.addEventListener('click', () => this.switchModeTab('saga'));
+    }
 
-    this.btnToggleInputMode.addEventListener('click', () => {
-      this.activeInputMode = this.activeInputMode === 'choices' ? 'keyboard' : 'choices';
-      this.applyInputMode();
-    });
+    if (this.tabArenaMode) {
+      this.tabArenaMode.addEventListener('click', () => this.switchModeTab('arena'));
+    }
+
+    if (this.btnStart) {
+      this.btnStart.addEventListener('click', () => {
+        this.audio.playSaberIgnite();
+        this.switchModeTab('arena');
+        this.showScreen('level-select');
+      });
+    }
+
+    if (this.btnHowToPlay) {
+      this.btnHowToPlay.addEventListener('click', () => {
+        if (this.modalHowTo) this.modalHowTo.classList.remove('hidden');
+      });
+    }
+
+    if (this.btnCloseModal) {
+      this.btnCloseModal.addEventListener('click', () => {
+        if (this.modalHowTo) this.modalHowTo.classList.add('hidden');
+      });
+    }
+
+    if (this.btnSoundToggle) {
+      this.btnSoundToggle.addEventListener('click', () => {
+        const isMuted = this.audio.toggleMute();
+        this.updateSoundButtonState();
+      });
+    }
+
+    if (this.btnBackToMenu) {
+      this.btnBackToMenu.addEventListener('click', () => {
+        this.showScreen('level-select');
+      });
+    }
+
+    if (this.btnBackToMain) {
+      this.btnBackToMain.addEventListener('click', () => {
+        this.showScreen('start');
+      });
+    }
+
+    if (this.btnNextLevel) {
+      this.btnNextLevel.addEventListener('click', () => {
+        if (this.modalVictory) this.modalVictory.classList.add('hidden');
+        if (this.currentLevelIndex < GAME_DATA.levels.length - 1) {
+          this.startLevel(this.currentLevelIndex + 1);
+        } else {
+          this.showScreen('level-select');
+        }
+      });
+    }
+
+    if (this.btnRetry) {
+      this.btnRetry.addEventListener('click', () => {
+        if (this.modalDefeat) this.modalDefeat.classList.add('hidden');
+        this.startLevel(this.currentLevelIndex);
+      });
+    }
+
+    if (this.btnToggleInputMode) {
+      this.btnToggleInputMode.addEventListener('click', () => {
+        this.activeInputMode = this.activeInputMode === 'choices' ? 'keyboard' : 'choices';
+        this.applyInputMode();
+      });
+    }
 
     // Keyboard support (0-9, Backspace, Enter)
     window.addEventListener('keydown', (e) => {
@@ -167,15 +227,36 @@ class JediMathGame {
     this.btnSoundToggle.setAttribute('aria-label', isMuted ? 'Włącz dźwięk' : 'Wycisz dźwięk');
   }
 
+  switchModeTab(mode) {
+    if (mode === 'saga') {
+      if (this.tabSagaMode) this.tabSagaMode.classList.add('active');
+      if (this.tabArenaMode) this.tabArenaMode.classList.remove('active');
+      if (this.sagaGrid) this.sagaGrid.classList.remove('hidden');
+      if (this.levelsGrid) this.levelsGrid.classList.add('hidden');
+    } else {
+      if (this.tabArenaMode) this.tabArenaMode.classList.add('active');
+      if (this.tabSagaMode) this.tabSagaMode.classList.remove('active');
+      if (this.levelsGrid) this.levelsGrid.classList.remove('hidden');
+      if (this.sagaGrid) this.sagaGrid.classList.add('hidden');
+    }
+  }
+
   showScreen(screenName) {
     this.screenStart.classList.add('hidden');
     this.screenLevelSelect.classList.add('hidden');
     this.screenBattle.classList.add('hidden');
+    if (this.screenMaze) this.screenMaze.classList.add('hidden');
+
+    if (screenName !== 'maze' && this.mazeGame) {
+      this.mazeGame.stop();
+    }
 
     if (screenName === 'start') {
+      this.renderCrystals();
       this.screenStart.classList.remove('hidden');
     } else if (screenName === 'level-select') {
       this.renderLevelMap();
+      this.renderSagaMap();
       this.screenLevelSelect.classList.remove('hidden');
     } else if (screenName === 'battle') {
       this.screenBattle.classList.remove('hidden');
@@ -184,7 +265,53 @@ class JediMathGame {
       } else {
         this.vfx.resize();
       }
+    } else if (screenName === 'maze') {
+      if (this.screenMaze) this.screenMaze.classList.remove('hidden');
+      if (this.mazeGame) {
+        this.mazeGame.setKyberCrystal(this.selectedCrystal);
+        this.mazeGame.resizeCanvas();
+      }
     }
+  }
+
+  renderSagaMap() {
+    const container = document.getElementById('saga-grid');
+    if (!container || !window.MAZE_EPISODES) return;
+    container.innerHTML = '';
+
+    window.MAZE_EPISODES.forEach((ep, idx) => {
+      const card = document.createElement('div');
+      card.className = 'level-card unlocked';
+      card.style.borderColor = ep.themeColor;
+
+      card.innerHTML = `
+        <div class="saga-badge-pill" style="border-color:${ep.themeColor}; color:${ep.themeColor}">${ep.episode}</div>
+        <div class="level-planet" style="color:${ep.themeColor}">🪐 ${ep.location}</div>
+        <div class="level-title">${ep.title}</div>
+        <div class="level-enemy">Misja: <strong>${ep.missionName}</strong></div>
+        <div class="level-desc">${ep.lore}</div>
+        <div class="level-action">
+          <button class="btn-primary btn-play-level">
+            Rozpocznij misję &rarr;
+          </button>
+        </div>
+      `;
+
+      card.querySelector('.btn-play-level').addEventListener('click', () => {
+        this.startMazeEpisode(idx);
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  startMazeEpisode(idx) {
+    if (!this.mazeGame) return;
+    this.audio.playSaberIgnite();
+    this.mazeGame.setKyberCrystal(this.selectedCrystal);
+    this.mazeGame.loadEpisode(idx);
+    this.showScreen('maze');
+    this.mazeGame.start();
   }
 
   renderCrystals() {
@@ -206,6 +333,7 @@ class JediMathGame {
       `;
       item.addEventListener('click', () => {
         this.selectedCrystal = c;
+        if (this.mazeGame) this.mazeGame.setKyberCrystal(c);
         this.audio.playSaberSwing();
         this.renderCrystals();
         this.updateSaberColor();
@@ -245,7 +373,7 @@ class JediMathGame {
         <div class="level-planet">${lvl.planet}</div>
         <div class="level-title">${lvl.title}</div>
         <div class="level-enemy">Wróg: <strong>${lvl.enemyName}</strong></div>
-        <div class="level-style">${icon} • Twoje życia: 5 | Życia wroga: 10</div>
+        <div class="level-style">${icon}</div>
         <div class="level-desc">${lvl.description}</div>
         <div class="level-action">
           ${isUnlocked 
@@ -1656,5 +1784,5 @@ class JediMathGame {
 
 // Instantiate game when DOM is ready
 window.addEventListener('DOMContentLoaded', () => {
-  window.jediGame = new JediMathGame();
+  window.jediGame = window.gameInstance = new JediMathGame();
 });
