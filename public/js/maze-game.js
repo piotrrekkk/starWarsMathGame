@@ -124,8 +124,9 @@ class JediMazeGame {
   }
 
   bindEvents() {
-    // Window resize
+    // Window resize & orientation change
     window.addEventListener('resize', () => this.resizeCanvas());
+    window.addEventListener('orientationchange', () => setTimeout(() => this.resizeCanvas(), 150));
 
     // Keyboard events
     window.addEventListener('keydown', (e) => this.onKeyDown(e));
@@ -221,13 +222,16 @@ class JediMazeGame {
   }
 
   resizeCanvas() {
-    if (!this.canvas) return;
+    if (!this.canvas || !this.canvas.parentElement) return;
     const rect = this.canvas.parentElement.getBoundingClientRect();
     this.width = this.canvas.width = rect.width;
     this.height = this.canvas.height = rect.height;
     
     // Scale tile size appropriately for screen
-    if (this.width < 600) {
+    if (this.height <= 460) {
+      // Mobile Landscape (Pixel 9 Pro, Pixel 7a, etc.)
+      this.tileSize = Math.max(34, Math.min(Math.floor(this.height / 7.2), 44));
+    } else if (this.width < 600) {
       this.tileSize = 42;
     } else if (this.width < 1000) {
       this.tileSize = 52;

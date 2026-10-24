@@ -242,6 +242,12 @@ class JediMathGame {
   }
 
   showScreen(screenName) {
+    if (screenName === 'maze' || screenName === 'battle') {
+      document.body.classList.add('screen-active-game');
+    } else {
+      document.body.classList.remove('screen-active-game');
+    }
+
     this.screenStart.classList.add('hidden');
     this.screenLevelSelect.classList.add('hidden');
     this.screenBattle.classList.add('hidden');
