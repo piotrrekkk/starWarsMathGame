@@ -170,14 +170,19 @@ class JediMazeGame {
     }
 
     if (this.btnBackToSaga) {
-      this.btnBackToSaga.addEventListener('click', () => {
+      const handleBackToSaga = (e) => {
+        if (e && e.type === 'touchend') {
+          e.preventDefault();
+        }
         this.stop();
         if (window.jediGame) {
           window.jediGame.showScreen('level-select');
         } else if (window.gameInstance) {
           window.gameInstance.showScreen('level-select');
         }
-      });
+      };
+      this.btnBackToSaga.addEventListener('click', handleBackToSaga);
+      this.btnBackToSaga.addEventListener('touchend', handleBackToSaga, { passive: false });
     }
 
     if (this.btnNextEpisode) {

@@ -144,15 +144,21 @@ class JediMathGame {
     }
 
     if (this.btnBackToMenu) {
-      this.btnBackToMenu.addEventListener('click', () => {
+      const handleBackMenu = (e) => {
+        if (e && e.type === 'touchend') e.preventDefault();
         this.showScreen('level-select');
-      });
+      };
+      this.btnBackToMenu.addEventListener('click', handleBackMenu);
+      this.btnBackToMenu.addEventListener('touchend', handleBackMenu, { passive: false });
     }
 
     if (this.btnBackToMain) {
-      this.btnBackToMain.addEventListener('click', () => {
+      const handleBackMain = (e) => {
+        if (e && e.type === 'touchend') e.preventDefault();
         this.showScreen('start');
-      });
+      };
+      this.btnBackToMain.addEventListener('click', handleBackMain);
+      this.btnBackToMain.addEventListener('touchend', handleBackMain, { passive: false });
     }
 
     if (this.btnNextLevel) {

@@ -109,9 +109,18 @@ body {
   padding: 12px 16px 24px;
 }
 
-/* Utility Hidden */
-.hidden {
+/* Utility Hidden - Highest Specificity to guarantee hiding any screen/modal */
+.hidden,
+#app-root .hidden,
+#screen-start.hidden,
+#screen-level-select.hidden,
+#screen-battle.hidden,
+#screen-maze.hidden,
+main.hidden,
+div.hidden {
   display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* Global Header */
@@ -1935,7 +1944,7 @@ body {
   }
 
   /* --- SCREEN 1: START SCREEN IN LANDSCAPE --- */
-  #screen-start {
+  #screen-start:not(.hidden) {
     height: calc(100dvh - 46px) !important;
     max-height: calc(100dvh - 46px) !important;
     overflow: hidden !important;
@@ -2021,7 +2030,7 @@ body {
   }
 
   /* --- SCREEN 2: LEVEL SELECT IN LANDSCAPE --- */
-  #screen-level-select {
+  #screen-level-select:not(.hidden) {
     height: calc(100dvh - 46px) !important;
     max-height: calc(100dvh - 46px) !important;
     overflow-y: auto !important;
@@ -2102,7 +2111,7 @@ body {
   }
 
   /* --- SCREEN 4: INTERACTIVE JEDI MAZE IN LANDSCAPE --- */
-  #screen-maze {
+  #screen-maze:not(.hidden) {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -2122,22 +2131,29 @@ body {
   }
 
   .maze-header-hud {
-    height: 32px !important;
-    min-height: 32px !important;
-    max-height: 32px !important;
-    padding: 1px 8px !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    max-height: 34px !important;
+    padding: 2px 8px !important;
     margin-bottom: 3px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
     gap: 6px !important;
     flex-wrap: nowrap !important;
+    position: relative;
+    z-index: 55;
   }
 
   #btn-maze-back {
-    min-height: 26px !important;
-    padding: 2px 8px !important;
-    font-size: 0.72rem !important;
+    min-height: 28px !important;
+    padding: 3px 10px !important;
+    font-size: 0.75rem !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+    position: relative;
+    z-index: 60;
+  }
   }
 
   .maze-meta {
@@ -2291,7 +2307,7 @@ body {
   }
 
   /* --- SCREEN 3: TURN-BASED ARENA IN LANDSCAPE --- */
-  #screen-battle {
+  #screen-battle:not(.hidden) {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
